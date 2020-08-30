@@ -1,5 +1,6 @@
 package com.example.aadhya;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -35,7 +36,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
             else {
                 if(password.getText().toString().equals(realpassword)) {
+                    Intent i=new Intent(LoginActivity.this, MainScreen.class);
                     Toast.makeText(getApplicationContext(),"Succesfully Logged in", Toast.LENGTH_SHORT).show();
+                    startActivity(i);
                 } else {
                     Toast.makeText(getApplicationContext(),"Password does not match",Toast.LENGTH_SHORT).show();
                 }
