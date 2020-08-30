@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Aadhya</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="signin">Sign in</string>
+    <string name="about">An app for women safety, <b>Aadya</b>, is equipped with an automatic shout (scream)
+                        feature that notifies 10 pre-saved contacts and other users within a 10-km
+                        radius. Each user is authenticated using an Identity card so you can feel
+                        safe no matter where you are. </string>
+    <string name="howtouse">How to use?</string>
+    <string name="aboutus"><b>ABOUT US</b></string>
+</resources>
