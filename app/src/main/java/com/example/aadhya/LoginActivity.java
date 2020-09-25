@@ -39,6 +39,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Intent i=new Intent(LoginActivity.this, MainScreen.class);
                     Toast.makeText(getApplicationContext(),"Succesfully Logged in", Toast.LENGTH_SHORT).show();
                     startActivity(i);
+                    finish();
                 } else {
                     Toast.makeText(getApplicationContext(),"Password does not match",Toast.LENGTH_SHORT).show();
                 }

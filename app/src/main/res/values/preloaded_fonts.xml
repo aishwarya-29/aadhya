@@ -2,5 +2,8 @@
 <resources>
     <array name="preloaded_fonts" translatable="false">
         <item>@font/anton</item>
+        <item>@font/lato_black</item>
+        <item>@font/montserrat_bold</item>
+        <item>@font/nunito_sans</item>
     </array>
 </resources>
