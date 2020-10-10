@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <permission
     android:name="com.example.aadhya.permission.MAPS_RECEIVE"
     android:protectionLevel="signature" />
@@ -27,7 +28,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".Contacts" />
+
         <activity android:name=".MainScreen" />
         <activity android:name=".MainActivity">
             <intent-filter>

@@ -8,17 +8,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainScreen">
 
-    <fragment
-        android:id="@+id/fragment1"
-        android:name="com.example.aadhya.MapFragment"
+    <FrameLayout
+        android:id="@+id/frag_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.999" />
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="464dp"
-        android:layout_weight="0.5" />
-
-    <fragment
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="com.example.aadhya.HomeScreenFragment"
-        android:id="@+id/fragment2"
-        android:layout_weight="0.5"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:menu="@menu/bottom_menu"
+        app:itemIconTint="@drawable/nav_selector"
+        app:itemTextColor="@drawable/nav_selector"/>
 </LinearLayout>
