@@ -15,7 +15,7 @@ import android.widget.TextView;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
-    Button b1;
+    Button b1,button;
     ConstraintLayout constraintLayout;
     TextView tvTimeMsg;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -28,6 +28,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i= new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(i);
+            }
+        });
+        button = findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MainActivity.this, MainActivity2.class);
                 startActivity(i);
             }
         });
