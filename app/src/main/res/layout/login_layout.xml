@@ -84,7 +84,7 @@
         android:layout_height="40dp"
         android:layout_gravity="start"
         android:layout_marginTop="24dp"
-        android:background="@drawable/button_default"
+        android:background="#FFECCC"
         android:fontFamily="@font/montserrat_bold"
         android:text="@string/signin"
         app:layout_constraintEnd_toEndOf="parent"
