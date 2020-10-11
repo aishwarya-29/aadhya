@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/wallpaper3"
-    tools:context=".signUp">
+    tools:context="com.example.aadhya.signUp">
 
     <TextView
         android:id="@+id/tv_reg"
@@ -26,29 +26,31 @@
         tools:ignore="MissingConstraints" />
 
     <Button
-        android:id="@+id/btn_signin"
+        android:id="@+id/btn_submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="86dp"
+        android:layout_marginRight="45dp"
+        android:layout_marginBottom="23dp"
         android:background="@drawable/bg_button_white"
         android:text="SUBMIT"
         android:textColor="#ffffff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_signup"
-        app:layout_constraintTop_toBottomOf="@+id/tvpassconf" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_clear" />
 
     <Button
-        android:id="@+id/btn_signup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="1dp"
-        android:layout_marginRight="1dp"
+        android:id="@+id/btn_clear"
+        android:layout_width="88dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="45dp"
+        android:layout_marginBottom="23dp"
         android:background="@drawable/bg_button_white"
         android:text="CLEAR"
         android:textColor="#ffffff"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btn_signin"
-        app:layout_constraintEnd_toStartOf="@+id/btn_signin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_submit"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints" />
 
