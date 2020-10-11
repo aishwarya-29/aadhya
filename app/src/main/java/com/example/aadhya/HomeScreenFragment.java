@@ -1,19 +1,100 @@
 package com.example.aadhya;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class HomeScreenFragment extends Fragment {
+    Button help;
+    final String pin = "1234";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View v= inflater.inflate(R.layout.fragment_home_screen, container, false);
+        help = v.findViewById(R.id.help);
+        help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Are you sure?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        final AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                        dialog.setTitle("Sending for help...");
+                        dialog.setMessage("Enter your secret PIN to cancel alert");
+
+                        final EditText input = new EditText(getContext());
+                        input.setWidth(50);
+
+                        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        dialog.setView(input);
+
+                        dialog.setPositiveButton("SOS", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Toast.makeText(getContext(),"Sending alerts to all your contacts. Contact 911 for immediate assistance.", Toast.LENGTH_LONG).show();
+                                dialogInterface.cancel();
+                            }
+                        });
+
+                        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                String s = input.getText().toString();
+                                if(s.equals(pin)) {
+                                    Toast.makeText(getContext(),"Cancelled alerts", Toast.LENGTH_SHORT).show();
+                                    dialogInterface.cancel();
+                                } else {
+                                    Toast.makeText(getContext(),"Invalid PIN", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+
+                        final AlertDialog alert = dialog.create();
+                        alert.show();
+                        final Handler handler = new Handler();
+                        final Runnable runnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                if (alert.isShowing()) {
+                                    alert.dismiss();
+                                }
+                            }
+                        };
+
+                        alert.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialog) {
+                                handler.removeCallbacks(runnable);
+                            }
+                        });
+
+                        handler.postDelayed(runnable, 10000);
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+                builder.show();
+            }
+        });
         return v;
     }
 }

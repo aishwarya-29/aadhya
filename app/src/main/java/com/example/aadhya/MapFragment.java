@@ -58,7 +58,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onSuccess(Location location) {
                 if (location != null) {
                     currentLocation = location;
-                    Toast.makeText(getContext(), currentLocation.getLatitude() + " " + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                     SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
                     supportMapFragment.getMapAsync(MapFragment.this);
                 }
