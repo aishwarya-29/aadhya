@@ -13,14 +13,18 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements View.OnClickListener {
     Button btnSubmit;
-    EditText name, pno , email, dob, aadhar, pwd, pwd2;
+    EditText name, pno , email, pin, aadhar, pwd, pwd2;
     Integer flaga=-1;
     Integer flagb=-1;
     Integer flagc=-1;
     Integer flagd=-1;
     Integer flage=-1;
+    Integer count=1;
     Boolean readUserInput= false;
 
     @Override
@@ -29,12 +33,11 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
         setContentView(R.layout.activity_sup);
         name = findViewById(R.id.textname);
         pno = findViewById(R.id.tvpno);
-        dob = findViewById(R.id.textdob);
+        pin = findViewById(R.id.textpin);
         email = findViewById(R.id.textmail);
         aadhar = findViewById(R.id.tvaadhar);
         pwd = findViewById(R.id.tvpass);
         pwd2 = findViewById(R.id.tvpassconf);
-
         btnSubmit = findViewById(R.id.btn_submit);
         Button clear;
         clear = findViewById(R.id.btn_clear);
@@ -45,7 +48,7 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
                         if (!readUserInput) {
                             name.setText("");
                             pno.setText("");
-                            dob.setText("");
+                            pin.setText("");
                             email.setText("");
                             aadhar.setText("");
                             pwd.setText("");
@@ -54,16 +57,17 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
                     }
                 }
         );
+
     }
 
     public void onClick(View v) {
         if (name.getText().toString().isEmpty() || pno.getText().toString().isEmpty()
-                || dob.getText().toString().isEmpty() || email.getText().toString().isEmpty()||aadhar.getText().toString().isEmpty() ||pwd.getText().toString().isEmpty() ||pwd2.getText().toString().isEmpty()) {
+                || pin.getText().toString().isEmpty() || email.getText().toString().isEmpty() || aadhar.getText().toString().isEmpty() || pwd.getText().toString().isEmpty() || pwd2.getText().toString().isEmpty()) {
             Toast.makeText(this, "Enter the details!!", Toast.LENGTH_LONG).show();
         } else {
 
             String r1 = String.valueOf(pwd.getText().toString());
-            String str1 =String.valueOf(pwd2.getText().toString());
+            String str1 = String.valueOf(pwd2.getText().toString());
             Integer len = str1.length();
             if (r1.regionMatches(0, str1, 0, len)) {
                 String str3 = String.valueOf(pwd.getText().toString());
@@ -73,64 +77,53 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
             }
         }
 
-        String pno1 =pno.getText().toString();
-        if (pno1.length()!=10) {
+        String pno1 = pno.getText().toString();
+        if (pno1.length() != 10) {
             Toast.makeText(this, "Enter the phone number correctly!!", Toast.LENGTH_LONG).show();
 
-        }
-        flagb = 0;
+        }else{
+        flagb = 0;}
 
-        String ad= aadhar.getText().toString();
-        if(ad.length()!=12){
+        String ad = aadhar.getText().toString();
+        if (ad.length() != 12) {
             Toast.makeText(this, "Enter the Aadhar number correctly!!", Toast.LENGTH_LONG).show();
-        }
-        else{
-            flagd=0;
+        } else {
+            flagd = 0;
         }
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-        if(email.getText().toString().isEmpty()) {
-            Toast.makeText(getApplicationContext(),"Enter email address",Toast.LENGTH_SHORT).show();
-        }
-        else {
+        if (email.getText().toString().isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Enter email address", Toast.LENGTH_SHORT).show();
+        } else {
             if (email.getText().toString().trim().matches(emailPattern)) {
-                flage=0;
-            } else {
-                Toast.makeText(getApplicationContext(),"Invalid email address", Toast.LENGTH_SHORT).show();
+                flage = 0;
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "Invalid email address", Toast.LENGTH_SHORT).show();
             }
         }
 
-        String dobVal = dob.getText().toString();
-        String dobComp[] = dobVal.split("/");
-        if (dobComp != null && dobComp.length != 0) {
-            int date = Integer.parseInt(dobComp[0]);
-            int month = Integer.parseInt(dobComp[1]);
-            int year = Integer.parseInt(dobComp[2]);
-            if (date < 1 || date > 31) {
-                Toast.makeText(this, "Enter a valid date!!", Toast.LENGTH_LONG).show();
-
-            }
-            if (month < 1 || month > 12) {
-                Toast.makeText(this, "Enter a valid month!!", Toast.LENGTH_LONG).show();
-            }
-            if (year < 1932 || year > 2020) {
-                Toast.makeText(this, "Enter a valid year!!", Toast.LENGTH_LONG).show();
-            }
-        }
-        else {
+        String pinval = pin.getText().toString();
+        if (pinval.length() != 4) {
+            Toast.makeText(getApplicationContext(), "Invalid PIN", Toast.LENGTH_SHORT).show();
+        } else {
             flagc = 0;
         }
-        btnSubmit.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (flaga == 0 && flagb == 0 && flagc == 0 && flagd == 0 && flage == 0) {
-                            Intent i = new Intent(signUp.this, LoginActivity.class);
-                            startActivity(i);
-                        }
-                    }
-                });
-
     }
-
-
+    public void submit(View v)
+    {
+        String n= name.getText().toString();
+        String e=email.getText().toString();
+        String m = pno.getText().toString();
+        String p= pin.getText().toString();
+        String pd =pwd.getText().toString();
+        String aa = aadhar.getText().toString();
+        String userId= "user ".concat(count.toString());
+        User user1 = new User(n,e,m,p,pd,aa);
+        DatabaseReference reference ;
+        reference = FirebaseDatabase.getInstance().getReference();
+        reference.child(userId).setValue(user1);
+        count++;
+        Intent i = new Intent(signUp.this, LoginActivity.class);
+        startActivity(i);
+    }
 }

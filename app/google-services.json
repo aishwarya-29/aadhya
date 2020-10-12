@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "887032027274",
+    "firebase_url": "https://aadhya-0221228.firebaseio.com",
+    "project_id": "aadhya-0221228",
+    "storage_bucket": "aadhya-0221228.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:887032027274:android:c0ecf84fbd3a9161eb7573",
+        "android_client_info": {
+          "package_name": "com.example.aadhya"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "887032027274-7uoa19tgg2a9plk81nmfecf87jstnjet.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCItgRob1st2qi7zpt3xXj39M7L09LKsVM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "887032027274-7uoa19tgg2a9plk81nmfecf87jstnjet.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
