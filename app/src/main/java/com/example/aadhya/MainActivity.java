@@ -15,7 +15,7 @@ import android.widget.TextView;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
-    Button b1;
+    Button b1, mainscreen;
     ConstraintLayout constraintLayout;
     TextView tvTimeMsg;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -24,6 +24,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         b1=findViewById(R.id.btn_signin);
+        mainscreen = findViewById(R.id.mainscreen);
+        mainscreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i= new Intent(MainActivity.this, MainScreen.class);
+                startActivity(i);
+            }
+        });
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
