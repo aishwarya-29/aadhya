@@ -116,8 +116,9 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
         String m = pno.getText().toString();
         String p= pin.getText().toString();
         String pd =pwd.getText().toString();
+        String aa = aadhar.getText().toString();
         String userId= "user ".concat(count.toString());
-        User user1 = new User(n,e,m,p,pd);
+        User user1 = new User(n,e,m,p,pd,aa);
         DatabaseReference reference ;
         reference = FirebaseDatabase.getInstance().getReference();
         reference.child(userId).setValue(user1);

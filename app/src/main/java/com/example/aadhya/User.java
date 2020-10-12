@@ -10,6 +10,7 @@ class User {
     public String uemail;
     public String umobno;
     public String upin;
+    public String uadhaar;
     public String upass;
 
     User()
@@ -19,15 +20,17 @@ class User {
         umobno="";
         upin="";
         upass="";
+        uadhaar="";
     }
 
-    User(String uname, String uemail, String umobno, String upin, String upass)
+    User(String uname, String uemail, String umobno, String upin, String upass, String uadhaar)
     {
         this.uname=uname;
         this.uemail=uemail;
         this.umobno=umobno;
         this.upin=upin;
         this.upass=upass;
+        this.uadhaar=uadhaar;
     }
 }
 //class User
