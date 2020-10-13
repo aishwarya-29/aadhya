@@ -39,25 +39,6 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
         pwd = findViewById(R.id.tvpass);
         pwd2 = findViewById(R.id.tvpassconf);
         btnSubmit = findViewById(R.id.btn_submit);
-        Button clear;
-        clear = findViewById(R.id.btn_clear);
-        clear.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (!readUserInput) {
-                            name.setText("");
-                            pno.setText("");
-                            pin.setText("");
-                            email.setText("");
-                            aadhar.setText("");
-                            pwd.setText("");
-                            pwd2.setText("");
-                        }
-                    }
-                }
-        );
-
     }
 
     public void onClick(View v) {

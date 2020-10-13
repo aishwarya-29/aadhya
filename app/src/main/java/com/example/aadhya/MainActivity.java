@@ -15,15 +15,24 @@ import android.widget.TextView;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
-    Button b1, mainscreen;
+    Button signIn,signUp, mainscreen;
     ConstraintLayout constraintLayout;
-    TextView tvTimeMsg;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        b1=findViewById(R.id.btn_signin);
+        signIn = findViewById(R.id.btn_signin);
+        signUp = findViewById(R.id.btn_signup);
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        signIn.setVisibility(View.VISIBLE);
+                        signUp.setVisibility(View.VISIBLE);
+                    }
+                },
+                3000);
+
         mainscreen = findViewById(R.id.mainscreen);
         mainscreen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-        b1.setOnClickListener(new View.OnClickListener() {
+        signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i= new Intent(MainActivity.this, LoginActivity.class);
@@ -40,35 +49,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         constraintLayout=findViewById(R.id.container);
-        tvTimeMsg=findViewById(R.id.tv_time_msg);
-        Calendar c= Calendar.getInstance();
-        int toD= c.get(Calendar.HOUR_OF_DAY);
-        if(toD>=0 && toD<12)
-        {
-            //morning
-            constraintLayout.setBackground(getDrawable(R.drawable.good_morning_img));
-            tvTimeMsg.setText("Good Morning");
-
-        }
-        else if(toD>=12 && toD<16)
-        {
-            constraintLayout.setBackground(getDrawable(R.drawable.good_morning_img));
-            tvTimeMsg.setText("Good Afternoon");
-            //afternoon
-        }
-        else if(toD>=16 && toD<21)
-        {
-            constraintLayout.setBackground(getDrawable(R.drawable.good_night_img));
-            tvTimeMsg.setText("Good Evening");
-            //evening
-        }
-        else if(toD>=21 && toD<24)
-        {
-            //night
-            constraintLayout.setBackground(getDrawable(R.drawable.good_night_img));
-            tvTimeMsg.setText("Good Night");
-
-        }
     }
     public void signUp(View v)
     {

@@ -20,6 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:menu="@menu/bottom_menu"
+        app:labelVisibilityMode="unlabeled"
         app:itemIconTint="@drawable/nav_selector"
         app:itemTextColor="@drawable/nav_selector"/>
+
 </LinearLayout>
