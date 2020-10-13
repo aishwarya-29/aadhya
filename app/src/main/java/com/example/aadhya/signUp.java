@@ -66,12 +66,10 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
             Toast.makeText(this, "Enter the details!!", Toast.LENGTH_LONG).show();
         } else {
 
-            String r1 = String.valueOf(pwd.getText().toString());
-            String str1 = String.valueOf(pwd2.getText().toString());
-            Integer len = str1.length();
-            if (r1.regionMatches(0, str1, 0, len)) {
-                String str3 = String.valueOf(pwd.getText().toString());
-                flaga = 0;
+            String r1 = pwd.getText().toString();
+            String str1 = pwd2.getText().toString();
+            if (r1.equals(str1)) {;
+                flaga = 1;
             } else {
                 Toast.makeText(signUp.this, "Please confirm your password", Toast.LENGTH_SHORT).show();
             }
@@ -80,22 +78,21 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
         String pno1 = pno.getText().toString();
         if (pno1.length() != 10) {
             Toast.makeText(this, "Enter the phone number correctly!!", Toast.LENGTH_LONG).show();
-
         }else{
-        flagb = 0;}
+        flagb = 1;}
 
         String ad = aadhar.getText().toString();
         if (ad.length() != 12) {
             Toast.makeText(this, "Enter the Aadhar number correctly!!", Toast.LENGTH_LONG).show();
         } else {
-            flagd = 0;
+            flagd = 1;
         }
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         if (email.getText().toString().isEmpty()) {
             Toast.makeText(getApplicationContext(), "Enter email address", Toast.LENGTH_SHORT).show();
         } else {
             if (email.getText().toString().trim().matches(emailPattern)) {
-                flage = 0;
+                flage = 1;
             }
             else {
                 Toast.makeText(getApplicationContext(), "Invalid email address", Toast.LENGTH_SHORT).show();
@@ -106,7 +103,7 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
         if (pinval.length() != 4) {
             Toast.makeText(getApplicationContext(), "Invalid PIN", Toast.LENGTH_SHORT).show();
         } else {
-            flagc = 0;
+            flagc = 1;
         }
     }
     public void submit(View v)
@@ -117,12 +114,11 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
         String p= pin.getText().toString();
         String pd =pwd.getText().toString();
         String aa = aadhar.getText().toString();
-        String userId= "user ".concat(count.toString());
         User user1 = new User(n,e,m,p,pd,aa);
+        String userid= n;
         DatabaseReference reference ;
         reference = FirebaseDatabase.getInstance().getReference();
-        reference.child(userId).setValue(user1);
-        count++;
+        reference.child(userid).setValue(user1);
         Intent i = new Intent(signUp.this, LoginActivity.class);
         startActivity(i);
     }

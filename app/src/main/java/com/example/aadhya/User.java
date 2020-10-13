@@ -12,7 +12,7 @@ class User {
     public String upin;
     public String uadhaar;
     public String upass;
-
+    public String[] contacts;
     User()
     {
         uname = "";
@@ -21,6 +21,7 @@ class User {
         upin="";
         upass="";
         uadhaar="";
+        contacts= new String[0];
     }
 
     User(String uname, String uemail, String umobno, String upin, String upass, String uadhaar)

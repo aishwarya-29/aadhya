@@ -18,6 +18,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
@@ -34,8 +35,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class HomeScreenFragment extends Fragment {
     Button help, stopRecording, help2;
