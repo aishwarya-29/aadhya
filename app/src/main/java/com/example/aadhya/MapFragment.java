@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -31,11 +32,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.Map;
+
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     View view;
     private static final int REQUEST_CODE = 101;
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
+    Map map;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,6 +68,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
     }
+
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

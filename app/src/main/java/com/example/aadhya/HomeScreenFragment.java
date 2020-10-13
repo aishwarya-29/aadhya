@@ -1,6 +1,10 @@
 package com.example.aadhya;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -27,22 +31,27 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
 
 public class HomeScreenFragment extends Fragment {
-    Button help, stopRecording;
+    Button help, stopRecording, help2;
     final String pin = "1234";
     MediaRecorder mediaRecorder;
     File audioFile = null;
+    AnimatorSet mAnimationSet;
+    ObjectAnimator fadeOut, fadeIn;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View v= inflater.inflate(R.layout.fragment_home_screen, container, false);
         help = v.findViewById(R.id.help);
+        help2 = v.findViewById(R.id.help2);
+        stopRecording = v.findViewById(R.id.stop_recording);
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,19 +73,7 @@ public class HomeScreenFragment extends Fragment {
                         dialog.setPositiveButton("SOS", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Toast.makeText(getContext(),"Sending alerts to all your contacts. Contact 911 for immediate assistance.", Toast.LENGTH_LONG).show();
-
-
-
-                                if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                                    ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.RECORD_AUDIO}, 0);
-                                } else {
-                                    if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-                                    } else {
-                                        startRecording();
-                                    }
-                                }
+                                sendAlerts();
                                 dialogInterface.cancel();
                             }
                         });
@@ -101,6 +98,7 @@ public class HomeScreenFragment extends Fragment {
                             @Override
                             public void run() {
                                 if (alert.isShowing()) {
+                                    sendAlerts();
                                     alert.dismiss();
                                 }
                             }
@@ -128,6 +126,22 @@ public class HomeScreenFragment extends Fragment {
         return v;
     }
 
+    private void sendAlerts() {
+        Toast.makeText(getContext(),"Sending alerts to all your contacts. Contact 911 for immediate assistance.", Toast.LENGTH_LONG).show();
+        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.RECORD_AUDIO}, 0);
+
+        } else {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+            } else {
+                startRecording();
+            }
+        }
+    }
+
     private void startRecording() {
         try {
             audioFile = File.createTempFile("sound",".3gp", getActivity().getExternalFilesDir(null));
@@ -147,49 +161,48 @@ public class HomeScreenFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        final ProgressDialog mProgressDialog = new ProgressDialog(getContext());
-        mProgressDialog.setTitle("Recording");
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setButton("Stop recording", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                mProgressDialog.dismiss();
+        mediaRecorder.start();
+        startButtonAnimation();
+        stopRecording.setVisibility(View.VISIBLE);
+        stopRecording.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 mediaRecorder.stop();
+                stopRecording.setVisibility(View.INVISIBLE);
                 mediaRecorder.release();
                 Toast.makeText(getContext(),"stopped", Toast.LENGTH_SHORT).show();
+                stopButtonAnimation();
             }
         });
-
-        mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener(){
-            public void onCancel(DialogInterface p1) {
-                mediaRecorder.stop();
-                mediaRecorder.release();
-            }
-        });
-        mediaRecorder.start();
-        mProgressDialog.show();
-        Toast.makeText(getContext(),"Started", Toast.LENGTH_SHORT).show();
     }
 
-//    public void stopRecording(View view) {
-//        mediaRecorder.stop();
-//        mediaRecorder.release();
-//        addRecordingToMediaLibrary();
-//    }
-//
-//    protected void addRecordingToMediaLibrary() {
-//        ContentValues values = new ContentValues(4);
-//        long current = System.currentTimeMillis();
-//        values.put(MediaStore.Audio.Media.TITLE, "audio" + audioFile.getName());
-//        values.put(MediaStore.Audio.Media.DATE_ADDED, (int) (current / 1000));
-//        values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/3gpp");
-//        values.put(MediaStore.Audio.Media.DATA, audioFile.getAbsolutePath());
-//
-//        ContentResolver contentResolver = getContext().getContentResolver();
-//        Uri base = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-//        Uri newUri = contentResolver.insert(base, values);
-//
-//        //sending broadcast message to scan the media file so that it can be available
-//        getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
-//        Toast.makeText(getContext(), "Added File " + newUri, Toast.LENGTH_LONG).show();
-//    }
+    private void startButtonAnimation(){
+        help2.setVisibility(View.VISIBLE);
+        fadeOut = ObjectAnimator.ofFloat(help2, "alpha", .5f, .1f);
+        fadeOut.setDuration(300);
+        fadeIn = ObjectAnimator.ofFloat(help2, "alpha", .1f, .5f);
+        fadeIn.setDuration(300);
+        mAnimationSet = new AnimatorSet();
+        mAnimationSet = new AnimatorSet();
+        mAnimationSet.play(fadeIn).after(fadeOut);
+        mAnimationSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                mAnimationSet.start();
+            }
+        });
+
+        mAnimationSet.start();
+    }
+
+    private void stopButtonAnimation() {
+        help2.setVisibility(View.INVISIBLE);
+        mAnimationSet.end();
+        mAnimationSet.cancel();
+    }
+
+
 }
+
+
