@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.SEND_SMS"/>
     <permission
     android:name="com.example.aadhya.permission.MAPS_RECEIVE"
     android:protectionLevel="signature" />
@@ -47,7 +48,6 @@
         <activity
             android:name=".LoginActivity"
             android:windowSoftInputMode="adjustResize" />
-
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

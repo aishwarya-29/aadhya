@@ -1,15 +1,23 @@
 package com.example.aadhya;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.content.ContentUris;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,55 +40,26 @@ import java.util.Objects;
 import static android.app.Activity.RESULT_OK;
 
 public class Contacts extends Fragment {
-    public class CustomList extends ArrayAdapter {
-        ArrayList<String> contactNames;
-        ArrayList<String> contactno;
-        ArrayList<Integer> imageid;
-        private Activity context;
-
-        public CustomList(Activity context, ArrayList<String> contactNames, ArrayList<String> contactno, ArrayList<Integer> imageid) {
-            super(context, R.layout.row, contactNames);
-            this.context = context;
-            this.contactNames = contactNames;
-            this.contactno = contactno;
-            this.imageid = imageid;
-
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View row=convertView;
-            LayoutInflater inflater = context.getLayoutInflater();
-            if(convertView==null)
-                row = inflater.inflate(R.layout.row, null, true);
-            TextView contactNameTv = (TextView) row.findViewById(R.id.ContactName);
-            TextView contactNoTv = (TextView) row.findViewById(R.id.ContactStatus);
-            ImageView img = (ImageView) row.findViewById(R.id.Dp);
-
-            contactNameTv.setText(contactNames.get(position));
-            contactNoTv.setText(contactno.get(position));
-            img.setImageResource(imageid.get(position));
-            return  row;
-        }
-    }
-
+    RecyclerView rc;
     private ListView lv;
-    private ArrayAdapter<String> adapter;
+    ContactsAdapter ca;
     ArrayList<String> contactNames= new ArrayList<>();
     ArrayList <String> contactno = new ArrayList<>();
     ArrayList <Integer> imageid=new ArrayList<>();
     View v;
     FloatingActionButton b;
+    Button dummy;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        v= inflater.inflate(R.layout.fragment_contacts, container, false);
-        lv = (ListView) v.findViewById(R.id.listv);
-        adapter = new ArrayAdapter<String>(getActivity(),R.layout.row, R.id.ContactName,contactNames);
-        lv.setAdapter(adapter);
-        CustomList customList = new CustomList(getActivity(), contactNames, contactno, imageid);
-        lv.setAdapter(customList);
+        v=inflater.inflate(R.layout.fragment_contacts, container, false);
+        rc=v.findViewById(R.id.list);
+        ca= new ContactsAdapter(getContext(), contactNames,contactno,imageid);
+        rc.setAdapter(ca);
+        rc.setLayoutManager(new LinearLayoutManager(getContext()));
+        new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(rc);
         b=v.findViewById(R.id.contactBtn);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,13 +69,22 @@ public class Contacts extends Fragment {
             }
         });
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
+        dummy=v.findViewById(R.id.button);
+        dummy.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String value = adapter.getItem(position);
-                Toast.makeText(v.getContext(), value, Toast.LENGTH_SHORT).show();
-            }});
+            public void onClick(View view) {
+                if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.SEND_SMS}, 0);
+                }
+                else{
+                    SmsManager sms = SmsManager.getDefault();
+                    String message="Testing this let's see if it works";
+                    for(String no: contactno){
+                        sms.sendTextMessage(no,null, message,null, null);
+                    }
+                }
+            }
+        });
         return v;
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -116,15 +104,20 @@ public class Contacts extends Fragment {
                         int phno = cursor != null ? cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER) : 0;
                         assert cursor != null;
                         int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+
                         number = cursor.getString(phno);
                         name = cursor.getString(nameIndex);
-                        contactNames.add(name);
-                        contactno.add(number);
-                        imageid.add(R.drawable.user);
-                        adapter = new ArrayAdapter<String>(getActivity(),R.layout.row, R.id.ContactName,contactNames);
-                        lv.setAdapter(adapter);
-                        CustomList customList = new CustomList(getActivity(), contactNames, contactno, imageid);
-                        lv.setAdapter(customList);
+
+                        if(contactno.indexOf(number)!=-1){
+                           Toast.makeText(getContext(), "Contact Number already added", Toast.LENGTH_LONG).show();
+                        }
+                        else {
+
+                            contactNames.add(name);
+                            contactno.add(number);
+                            imageid.add(R.drawable.user);
+                            ca.notifyDataSetChanged();
+                        }
                         cursor.close();
                     }
                     catch (Exception e) {
@@ -136,5 +129,19 @@ public class Contacts extends Fragment {
             }
         }
     }
+    ItemTouchHelper.SimpleCallback itemTouchHelper = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                contactNames.remove(viewHolder.getAdapterPosition());
+                contactno.remove(viewHolder.getAdapterPosition());
+                imageid.remove(viewHolder.getAdapterPosition());
+                ca.notifyDataSetChanged();
+        }
+    };
 
 }
