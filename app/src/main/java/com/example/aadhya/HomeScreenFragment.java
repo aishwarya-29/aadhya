@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,63 +56,12 @@ public class HomeScreenFragment extends Fragment {
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                final AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
                 builder.setTitle("Are you sure?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        final AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
-                        dialog.setTitle("Sending for help...");
-                        dialog.setMessage("Enter your secret PIN to cancel alert");
-
-                        final EditText input = new EditText(getContext());
-                        input.setWidth(50);
-
-                        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                        dialog.setView(input);
-
-                        dialog.setPositiveButton("SOS", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                sendAlerts();
-                                dialogInterface.cancel();
-                            }
-                        });
-
-                        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                String s = input.getText().toString();
-                                if(s.equals(pin)) {
-                                    Toast.makeText(getContext(),"Cancelled alerts", Toast.LENGTH_SHORT).show();
-                                    dialogInterface.cancel();
-                                } else {
-                                    Toast.makeText(getContext(),"Invalid PIN", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
-
-                        final AlertDialog alert = dialog.create();
-                        alert.show();
-                        final Handler handler = new Handler();
-                        final Runnable runnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                if (alert.isShowing()) {
-                                    sendAlerts();
-                                    alert.dismiss();
-                                }
-                            }
-                        };
-
-                        alert.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                handler.removeCallbacks(runnable);
-                            }
-                        });
-
-                        handler.postDelayed(runnable, 10000);
+                        confirmAlert();
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -124,6 +74,60 @@ public class HomeScreenFragment extends Fragment {
             }
         });
         return v;
+    }
+
+    private void confirmAlert() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
+        dialog.setTitle("Sending for help...");
+        dialog.setMessage("Enter your secret PIN to cancel alert");
+
+        final EditText input = new EditText(getContext());
+
+        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        dialog.setView(input);
+
+        dialog.setPositiveButton("SOS", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                sendAlerts();
+                dialogInterface.cancel();
+            }
+        });
+
+        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String s = input.getText().toString();
+                if(s.equals(pin)) {
+                    Toast.makeText(getContext(),"Cancelled alerts", Toast.LENGTH_SHORT).show();
+                    dialogInterface.cancel();
+                } else {
+                    Toast.makeText(getContext(),"Invalid PIN", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        final AlertDialog alert = dialog.create();
+        alert.show();
+        final Handler handler = new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (alert.isShowing()) {
+                    sendAlerts();
+                    alert.dismiss();
+                }
+            }
+        };
+
+        alert.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                handler.removeCallbacks(runnable);
+            }
+        });
+
+        handler.postDelayed(runnable, 10000);
     }
 
     private void sendAlerts() {
@@ -167,11 +171,7 @@ public class HomeScreenFragment extends Fragment {
         stopRecording.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mediaRecorder.stop();
-                stopRecording.setVisibility(View.INVISIBLE);
-                mediaRecorder.release();
-                Toast.makeText(getContext(),"stopped", Toast.LENGTH_SHORT).show();
-                stopButtonAnimation();
+                stopAlerts();
             }
         });
     }
@@ -196,10 +196,37 @@ public class HomeScreenFragment extends Fragment {
         mAnimationSet.start();
     }
 
-    private void stopButtonAnimation() {
-        help2.setVisibility(View.INVISIBLE);
-        mAnimationSet.end();
-        mAnimationSet.cancel();
+    private void stopAlerts() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(new ContextThemeWrapper(getContext(),R.style.AlertDialogCustom));
+        dialog.setTitle("False Alarm?");
+        dialog.setMessage("Enter your secret PIN to cancel alert");
+
+        final EditText input = new EditText(getContext());
+        input.setWidth(50);
+
+        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        dialog.setView(input);
+
+        dialog.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(input.getText().toString().equals(pin)) {
+                    mediaRecorder.stop();
+                    stopRecording.setVisibility(View.INVISIBLE);
+                    mediaRecorder.release();
+                    Toast.makeText(getContext(),"stopped", Toast.LENGTH_SHORT).show();
+                    help2.setVisibility(View.INVISIBLE);
+                    mAnimationSet.end();
+                    mAnimationSet.cancel();
+                } else {
+                    Toast.makeText(getContext(),"Invalid PIN", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        final AlertDialog alert = dialog.create();
+        alert.show();
+
     }
 
 

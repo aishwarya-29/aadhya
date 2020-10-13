@@ -13,6 +13,12 @@
         <item name="colorAccent">#ffffff</item>
         <item name="android:textColorHint">#ffffff</item>
     </style>
-
-
+    <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!-- Used for the buttons -->
+        <item name="colorAccent">#192c3a</item>
+        <!-- Used for the title and text -->
+        <item name="android:textColorPrimary">#192c3a</item>
+        <!-- Used for the background -->
+        <item name="android:background">#CFF5FF</item>
+    </style>
 </resources>
