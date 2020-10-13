@@ -2,6 +2,8 @@ package com.example.aadhya;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -32,40 +34,9 @@ import java.util.Objects;
 import static android.app.Activity.RESULT_OK;
 
 public class Contacts extends Fragment {
-    public class CustomList extends ArrayAdapter {
-        ArrayList<String> contactNames;
-        ArrayList<String> contactno;
-        ArrayList<Integer> imageid;
-        private Activity context;
-
-        public CustomList(Activity context, ArrayList<String> contactNames, ArrayList<String> contactno, ArrayList<Integer> imageid) {
-            super(context, R.layout.row, contactNames);
-            this.context = context;
-            this.contactNames = contactNames;
-            this.contactno = contactno;
-            this.imageid = imageid;
-
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View row=convertView;
-            LayoutInflater inflater = context.getLayoutInflater();
-            if(convertView==null)
-                row = inflater.inflate(R.layout.row, null, true);
-            TextView contactNameTv = (TextView) row.findViewById(R.id.ContactName);
-            TextView contactNoTv = (TextView) row.findViewById(R.id.ContactStatus);
-            ImageView img = (ImageView) row.findViewById(R.id.Dp);
-
-            contactNameTv.setText(contactNames.get(position));
-            contactNoTv.setText(contactno.get(position));
-            img.setImageResource(imageid.get(position));
-            return  row;
-        }
-    }
-
+    RecyclerView rc;
+    RecyclerView.Adapter ra;
     private ListView lv;
-    private ArrayAdapter<String> adapter;
     ArrayList<String> contactNames= new ArrayList<>();
     ArrayList <String> contactno = new ArrayList<>();
     ArrayList <Integer> imageid=new ArrayList<>();
@@ -75,12 +46,12 @@ public class Contacts extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        v= inflater.inflate(R.layout.fragment_contacts, container, false);
-        lv = (ListView) v.findViewById(R.id.listv);
-        adapter = new ArrayAdapter<String>(getActivity(),R.layout.row, R.id.ContactName,contactNames);
-        lv.setAdapter(adapter);
-        CustomList customList = new CustomList(getActivity(), contactNames, contactno, imageid);
-        lv.setAdapter(customList);
+        v=inflater.inflate(R.layout.fragment_contacts, container, false);
+        rc=v.findViewById(R.id.list);
+        ContactsAdapter ca= new ContactsAdapter(getContext(), contactNames,contactno,imageid);
+        rc.setAdapter(ca);
+        rc.setLayoutManager(new LinearLayoutManager(getContext()));
+
         b=v.findViewById(R.id.contactBtn);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,14 +60,6 @@ public class Contacts extends Fragment {
                 startActivityForResult(contactPickerIntent, 111);
             }
         });
-
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String value = adapter.getItem(position);
-                Toast.makeText(v.getContext(), value, Toast.LENGTH_SHORT).show();
-            }});
         return v;
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -121,10 +84,9 @@ public class Contacts extends Fragment {
                         contactNames.add(name);
                         contactno.add(number);
                         imageid.add(R.drawable.user);
-                        adapter = new ArrayAdapter<String>(getActivity(),R.layout.row, R.id.ContactName,contactNames);
-                        lv.setAdapter(adapter);
-                        CustomList customList = new CustomList(getActivity(), contactNames, contactno, imageid);
-                        lv.setAdapter(customList);
+                        ContactsAdapter ca= new ContactsAdapter(getContext(), contactNames,contactno,imageid);
+                        rc.setAdapter(ca);
+                        rc.setLayoutManager(new LinearLayoutManager(getContext()));
                         cursor.close();
                     }
                     catch (Exception e) {

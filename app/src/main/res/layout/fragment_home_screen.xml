@@ -12,7 +12,7 @@
         android:layout_width="121dp"
         android:layout_height="121dp"
         android:layout_marginTop="419dp"
-        android:layout_marginBottom="31dp"
+        android:layout_marginBottom="231dp"
         android:background="@drawable/help_button"
         android:fontFamily="@font/montserrat_bold"
         android:text="Help!"
