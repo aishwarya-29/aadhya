@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.telephony.SmsManager;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -136,8 +137,9 @@ public class HomeScreenFragment extends Fragment {
 
     private void sendAlerts() {
         Toast.makeText(getContext(),"Sending alerts to all your contacts. Contact 911 for immediate assistance.", Toast.LENGTH_LONG).show();
-        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+        SmsManager sms = SmsManager.getDefault();
 
+        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.RECORD_AUDIO}, 0);
 
         } else {
@@ -200,7 +202,6 @@ public class HomeScreenFragment extends Fragment {
                 mAnimationSet.start();
             }
         });
-
         mAnimationSet.start();
     }
 
@@ -209,8 +210,6 @@ public class HomeScreenFragment extends Fragment {
         mAnimationSet.end();
         mAnimationSet.cancel();
     }
-
-
 }
 
 
