@@ -59,7 +59,7 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class HomeScreenFragment extends Fragment {
     Button help, stopRecording, help2;
-    String pin = "1234";
+    String pin = "3333";
     MediaRecorder mediaRecorder;
     File audioFile = null;
     AnimatorSet mAnimationSet;
@@ -74,13 +74,12 @@ public class HomeScreenFragment extends Fragment {
         View v= inflater.inflate(R.layout.fragment_home_screen, container, false);
         currentUserEmail = currentUser.getEmail();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child("users").orderByChild("uemail").equalTo(currentUserEmail);
-        Toast.makeText(getContext(), query.toString(), Toast.LENGTH_SHORT).show();
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.child("User").orderByChild("uemail").equalTo(currentUserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()) {
-                    Toast.makeText(getContext(),snapshot.toString(), Toast.LENGTH_SHORT).show();
+                for(DataSnapshot ds : snapshot.getChildren()){
+                    pin = ds.child("upin").getValue(String.class);
+                    Toast.makeText(getContext(), pin, Toast.LENGTH_SHORT).show();
                 }
             }
 
