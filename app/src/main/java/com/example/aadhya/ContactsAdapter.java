@@ -37,6 +37,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
             holder.tv1.setText(names.get(position));
             holder.tv2.setText(no.get(position));
             holder.img.setImageResource(img.get(position));
+
     }
 
     @Override
