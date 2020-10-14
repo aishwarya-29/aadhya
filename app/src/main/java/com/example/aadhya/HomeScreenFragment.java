@@ -16,6 +16,7 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -40,6 +41,14 @@ import android.widget.Toast;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,17 +59,36 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class HomeScreenFragment extends Fragment {
     Button help, stopRecording, help2;
-    final String pin = "1234";
+    String pin = "1234";
     MediaRecorder mediaRecorder;
     File audioFile = null;
     AnimatorSet mAnimationSet;
     ObjectAnimator fadeOut, fadeIn;
     boolean SOSMode = false;
+    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    String currentUserEmail;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View v= inflater.inflate(R.layout.fragment_home_screen, container, false);
+        currentUserEmail = currentUser.getEmail();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference.child("users").orderByChild("uemail").equalTo(currentUserEmail);
+        Toast.makeText(getContext(), query.toString(), Toast.LENGTH_SHORT).show();
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()) {
+                    Toast.makeText(getContext(),snapshot.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         help = v.findViewById(R.id.help);
         help2 = v.findViewById(R.id.help2);
         stopRecording = v.findViewById(R.id.stop_recording);
