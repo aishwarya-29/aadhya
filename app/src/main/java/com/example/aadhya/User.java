@@ -14,8 +14,8 @@ class User {
     public String upin;
     public String uadhaar;
     public String[] contacts;
-//    public ArrayList<String> cname= new ArrayList<>();
-//    public static ArrayList <String> cno = new ArrayList<>();
+    public ArrayList<String> cname= new ArrayList<>();
+    public static ArrayList <String> cno = new ArrayList<>();
     User()
     {
         uname = "";

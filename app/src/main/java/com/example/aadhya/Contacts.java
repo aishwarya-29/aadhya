@@ -43,6 +43,12 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -62,6 +68,8 @@ public class Contacts extends Fragment {
     FloatingActionButton b;
     Button dummy;
     public Drawable icon;
+    String currentUserEmail;
+    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -109,7 +117,7 @@ public class Contacts extends Fragment {
             switch (requestCode) {
                 case 111:
                     Cursor cursor;
-                    try {                        String name, number, picture;
+                    try {                        final String name, number, picture;
                         Uri uri = data.getData();
                         assert uri != null;
                         cursor = Objects.requireNonNull(getActivity()).getContentResolver().query(uri, null, null, null, null);
@@ -151,6 +159,23 @@ public class Contacts extends Fragment {
                             else{
                                 contactNames.add(name);
                                 contactno.add(number);
+                                currentUserEmail = currentUser.getEmail();
+                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                                Query query = reference.child("users").orderByChild("uemail").equalTo(currentUserEmail);
+                                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if(snapshot.exists()) {
+
+
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
                                 imageid.add(R.drawable.user);
                                 ca.notifyDataSetChanged();
                             }

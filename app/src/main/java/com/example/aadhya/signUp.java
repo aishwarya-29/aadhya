@@ -29,7 +29,6 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
     Integer flagc=-1;
     Integer flagd=-1;
     Integer flage=-1;
-    Integer count=1;
     Boolean readUserInput= false;
     private FirebaseAuth auth;
 

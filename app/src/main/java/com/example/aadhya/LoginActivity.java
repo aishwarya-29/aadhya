@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     Button login;
     EditText email, password;
+    TextView su;
     String realpassword = "password";
     private FirebaseAuth auth;
     @Override
@@ -28,6 +30,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         login = findViewById(R.id.login);
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
+        su= findViewById(R.id.sup);
         login.setOnClickListener(this);
     }
 
@@ -60,6 +63,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
             }
         }
+    }
+    public void su(View v)
+    {
+        Intent i = new Intent(LoginActivity.this,signUp.class);
+        startActivity(i);
+        finish();
+    }
+    public void forgotpass(View v)
+    {
+        Intent i = new Intent(LoginActivity.this,ForgotPassword.class);
+        startActivity(i);
+        finish();
     }
 }
 

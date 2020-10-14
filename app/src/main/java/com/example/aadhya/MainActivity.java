@@ -50,10 +50,11 @@ public class MainActivity extends AppCompatActivity {
         });
         constraintLayout=findViewById(R.id.container);
     }
-    public void signUp(View v)
+    public void signUp(View view)
     {
-        Intent click= new Intent(this, signUp.class);
+        Intent click= new Intent(MainActivity.this, signUp.class);
         startActivity(click);
+        finish();
     }
 
 

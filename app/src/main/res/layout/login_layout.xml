@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#D2FFFFFF"
-    tools:context=".MainActivity">
+    tools:context=".LoginActivity">
 
     <ImageView
         android:id="@+id/imageView2"
@@ -103,12 +103,12 @@
         android:layout_marginBottom="412dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/signup"
+        app:layout_constraintEnd_toEndOf="@+id/sup"
         app:layout_constraintStart_toStartOf="@+id/email"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <TextView
-        android:id="@+id/signup"
+        android:id="@+id/sup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
@@ -123,7 +123,9 @@
         app:layout_constraintEnd_toStartOf="@+id/forgotPassword"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
+        app:layout_constraintTop_toBottomOf="@+id/password"
+        android:clickable="true"
+        android:onClick="su"/>
 
     <TextView
         android:id="@+id/forgotPassword"
@@ -138,6 +140,9 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
+        app:layout_constraintTop_toBottomOf="@+id/password"
+        android:clickable="true"
+        android:onClick="forgotpass"
+        android:gravity="end" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
