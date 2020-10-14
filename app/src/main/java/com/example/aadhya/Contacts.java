@@ -134,10 +134,10 @@ public class Contacts extends Fragment {
                             builder.show();
                         }
                         else {
-                            if(contactno.size()>=10){
+                            if(contactno.size()>=5){
                                 final AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
                                 builder.setTitle("Contact limit reached!");
-                                builder.setMessage("Delete a few contacts to add others! Only 10 contacts can be added");
+                                builder.setMessage("Delete a few contacts to add others! Only 5 contacts can be added");
                                 builder.setNegativeButton("Okay", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
