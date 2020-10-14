@@ -43,6 +43,7 @@ import com.google.android.gms.location.LocationServices;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -141,7 +142,7 @@ public class HomeScreenFragment extends Fragment {
 
     private void sendAlerts() {
         Toast.makeText(getContext(),"Sending alerts to all your contacts. Contact 911 for immediate assistance.", Toast.LENGTH_LONG).show();
-        SmsManager sms = SmsManager.getDefault();
+        sendSMS();
 
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.RECORD_AUDIO}, 0);
@@ -153,6 +154,16 @@ public class HomeScreenFragment extends Fragment {
             } else {
                 startRecording();
             }
+        }
+    }
+
+    private void sendSMS() {
+        Contacts contacts = new Contacts();
+        ArrayList<String> contactno = contacts.contactno;
+        SmsManager sms = SmsManager.getDefault();
+        String message="SOS. I'm in trouble. Open the app to view my location.";
+        for(String no: contactno){
+            sms.sendTextMessage(no,null, message,null, null);
         }
     }
 

@@ -44,7 +44,7 @@ public class Contacts extends Fragment {
     private ListView lv;
     ContactsAdapter ca;
     ArrayList<String> contactNames= new ArrayList<>();
-    ArrayList <String> contactno = new ArrayList<>();
+    public static ArrayList <String> contactno = new ArrayList<>();
     ArrayList <Integer> imageid=new ArrayList<>();
     View v;
     FloatingActionButton b;
