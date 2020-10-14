@@ -19,6 +19,6 @@
         <!-- Used for the title and text -->
         <item name="android:textColorPrimary">#192c3a</item>
         <!-- Used for the background -->
-        <item name="android:background">#CFF5FF</item>
+        <item name="android:background">#FFECCC</item>
     </style>
 </resources>

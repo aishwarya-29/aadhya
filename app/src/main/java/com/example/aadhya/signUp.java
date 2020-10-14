@@ -1,5 +1,6 @@
 package com.example.aadhya;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -13,6 +14,10 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -26,11 +31,13 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
     Integer flage=-1;
     Integer count=1;
     Boolean readUserInput= false;
+    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sup);
+        auth = FirebaseAuth.getInstance();
         name = findViewById(R.id.textname);
         pno = findViewById(R.id.tvpno);
         pin = findViewById(R.id.textpin);
@@ -95,12 +102,13 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
         String p= pin.getText().toString();
         String pd =pwd.getText().toString();
         String aa = aadhar.getText().toString();
-        User user1 = new User(n,e,m,p,pd,aa);
+        User user1 = new User(n,e,m,p,aa);
         String userid= n;
         DatabaseReference reference ;
         reference = FirebaseDatabase.getInstance().getReference();
         reference.child(userid).setValue(user1);
-        Intent i = new Intent(signUp.this, LoginActivity.class);
+        auth.createUserWithEmailAndPassword(e,pd);
+        Intent i = new Intent(signUp.this, MainScreen.class);
         startActivity(i);
     }
 }

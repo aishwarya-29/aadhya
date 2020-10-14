@@ -55,6 +55,7 @@ public class HomeScreenFragment extends Fragment {
     File audioFile = null;
     AnimatorSet mAnimationSet;
     ObjectAnimator fadeOut, fadeIn;
+    boolean SOSMode = false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,21 +67,23 @@ public class HomeScreenFragment extends Fragment {
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
-                builder.setTitle("Are you sure?");
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        confirmAlert();
-                    }
-                });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-                builder.show();
+                if(!SOSMode) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
+                    builder.setTitle("Are you sure?");
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            confirmAlert();
+                        }
+                    });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    });
+                    builder.show();
+                }
             }
         });
         return v;
@@ -141,6 +144,7 @@ public class HomeScreenFragment extends Fragment {
     }
 
     private void sendAlerts() {
+        SOSMode = true;
         Toast.makeText(getContext(),"Sending alerts to all your contacts. Contact 911 for immediate assistance.", Toast.LENGTH_LONG).show();
         sendSMS();
 
@@ -231,6 +235,7 @@ public class HomeScreenFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if(input.getText().toString().equals(pin)) {
+                    SOSMode = false;
                     mediaRecorder.stop();
                     stopRecording.setVisibility(View.INVISIBLE);
                     mediaRecorder.release();
