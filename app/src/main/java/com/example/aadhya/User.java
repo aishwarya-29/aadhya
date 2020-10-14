@@ -5,6 +5,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 class User {
     public String uname;
     public String uemail;
@@ -12,6 +14,8 @@ class User {
     public String upin;
     public String uadhaar;
     public String[] contacts;
+//    public ArrayList<String> cname= new ArrayList<>();
+//    public static ArrayList <String> cno = new ArrayList<>();
     User()
     {
         uname = "";
