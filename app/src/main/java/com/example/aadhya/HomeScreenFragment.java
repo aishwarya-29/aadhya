@@ -65,11 +65,28 @@ public class HomeScreenFragment extends Fragment {
     AnimatorSet mAnimationSet;
     ObjectAnimator fadeOut, fadeIn;
     boolean SOSMode = false;
+    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    String currentUserEmail;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View v= inflater.inflate(R.layout.fragment_home_screen, container, false);
+        currentUserEmail = currentUser.getEmail();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.child("User").orderByChild("uemail").equalTo(currentUserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot ds : snapshot.getChildren()){
+                    pin = ds.child("upin").getValue(String.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         help = v.findViewById(R.id.help);
         help2 = v.findViewById(R.id.help2);
         stopRecording = v.findViewById(R.id.stop_recording);
