@@ -66,7 +66,6 @@ public class Contacts extends Fragment {
     ArrayList <Integer> imageid=new ArrayList<>();
     View v;
     FloatingActionButton b;
-    Button dummy;
     public Drawable icon;
     String currentUserEmail;
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -92,22 +91,6 @@ public class Contacts extends Fragment {
         });
         icon=ContextCompat.getDrawable(Objects.requireNonNull(getContext()), R.drawable.ic_baseline_delete_24);
 
-        dummy=v.findViewById(R.id.button);
-        dummy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.SEND_SMS}, 0);
-                }
-                else{
-                    SmsManager sms = SmsManager.getDefault();
-                    String message="Testing this let's see if it works";
-                    for(String no: contactno){
-                        sms.sendTextMessage(no,null, message,null, null);
-                    }
-                }
-            }
-        });
         return v;
     }
     @RequiresApi(api = Build.VERSION_CODES.M)

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -31,6 +32,7 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
     Integer flage=-1;
     Boolean readUserInput= false;
     private FirebaseAuth auth;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +47,16 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
         pwd = findViewById(R.id.tvpass);
         pwd2 = findViewById(R.id.tvpassconf);
         btnSubmit = findViewById(R.id.btn_submit);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Signing up");
+        progressDialog.setContentView(R.layout.progress_dialog);
     }
 
     public void onClick(View v) {
+        progressDialog.show();
         if (name.getText().toString().isEmpty() || pno.getText().toString().isEmpty()
                 || pin.getText().toString().isEmpty() || email.getText().toString().isEmpty() || aadhar.getText().toString().isEmpty() || pwd.getText().toString().isEmpty() || pwd2.getText().toString().isEmpty()) {
+            progressDialog.dismiss();
             Toast.makeText(this, "Enter the details!!", Toast.LENGTH_LONG).show();
         } else {
 
@@ -58,36 +65,42 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
             if (r1.equals(str1)) {;
                 flaga = 1;
             } else {
+                progressDialog.dismiss();
                 Toast.makeText(signUp.this, "Please confirm your password", Toast.LENGTH_SHORT).show();
             }
         }
 
         String pno1 = pno.getText().toString();
         if (pno1.length() != 10) {
+            progressDialog.dismiss();
             Toast.makeText(this, "Enter the phone number correctly!!", Toast.LENGTH_LONG).show();
         }else{
         flagb = 1;}
 
         String ad = aadhar.getText().toString();
         if (ad.length() != 12) {
+            progressDialog.dismiss();
             Toast.makeText(this, "Enter the Aadhar number correctly!!", Toast.LENGTH_LONG).show();
         } else {
             flagd = 1;
         }
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         if (email.getText().toString().isEmpty()) {
+            progressDialog.dismiss();
             Toast.makeText(getApplicationContext(), "Enter email address", Toast.LENGTH_SHORT).show();
         } else {
             if (email.getText().toString().trim().matches(emailPattern)) {
                 flage = 1;
             }
             else {
+                progressDialog.dismiss();
                 Toast.makeText(getApplicationContext(), "Invalid email address", Toast.LENGTH_SHORT).show();
             }
         }
 
         String pinval = pin.getText().toString();
         if (pinval.length() != 4) {
+            progressDialog.dismiss();
             Toast.makeText(getApplicationContext(), "Invalid PIN", Toast.LENGTH_SHORT).show();
         } else {
             flagc = 1;
@@ -108,6 +121,7 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
         DatabaseReference newRef = reference.child("User").push();
         newRef.setValue(user1);
         auth.createUserWithEmailAndPassword(e,pd);
+        progressDialog.dismiss();
         Intent i = new Intent(signUp.this, MainScreen.class);
         startActivity(i);
     }

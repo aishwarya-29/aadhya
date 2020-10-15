@@ -1,5 +1,6 @@
 package com.example.aadhya;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -22,6 +23,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     TextView su;
     String realpassword = "password";
     private FirebaseAuth auth;
+    ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,10 +34,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         password = findViewById(R.id.password);
         su= findViewById(R.id.sup);
         login.setOnClickListener(this);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Signing in");
+        progressDialog.setContentView(R.layout.progress_dialog);
     }
 
     @Override
     public void onClick(View view) {
+        progressDialog.show();
         if(email.getText().toString().isEmpty() || password.getText().toString().isEmpty()) {
             Toast.makeText(getApplicationContext(),"Enter all details",Toast.LENGTH_SHORT).show();
         }
@@ -43,6 +49,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             String em = email.getText().toString();
             String pattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
             if(!(em.trim().matches(pattern))) {
+                progressDialog.dismiss();
                 Toast.makeText(getApplicationContext(), "Invalid email address", Toast.LENGTH_SHORT).show();;
             }
             else {
@@ -52,11 +59,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(),"Succesfully Logged in", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
                             Intent i=new Intent(LoginActivity.this, MainScreen.class);
                             startActivity(i);
                             finish();
                         } else {
+                            progressDialog.dismiss();
                             Toast.makeText(getApplicationContext(),"Login failed!!  " + task.getException().getMessage(),Toast.LENGTH_LONG).show();
                         }
                     }

@@ -1,5 +1,6 @@
 package com.example.aadhya;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -19,6 +20,7 @@ public class ForgotPassword extends AppCompatActivity {
     EditText ed;
     Button bu;
     FirebaseAuth mAuth;
+    ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,12 +28,17 @@ public class ForgotPassword extends AppCompatActivity {
         bu = findViewById(R.id.btn_mail);
         ed= findViewById(R.id.forgmail);
         mAuth= FirebaseAuth.getInstance();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Sending reset link");
+        progressDialog.setContentView(R.layout.progress_dialog);
         ed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.show();
                 String mail = ed.getText().toString();
                 if(TextUtils.isEmpty(mail))
                 {
+                    progressDialog.dismiss();
                     Toast.makeText(ForgotPassword.this, "Please enter your email address", Toast.LENGTH_LONG).show();
                 }
                 else
@@ -41,6 +48,7 @@ public class ForgotPassword extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful())
                             {
+                                progressDialog.dismiss();
                                 Toast.makeText(ForgotPassword.this, "Please check your email", Toast.LENGTH_LONG).show();
                                 Intent i= new Intent(ForgotPassword.this, LoginActivity.class);
                                 startActivity(i);
@@ -48,6 +56,7 @@ public class ForgotPassword extends AppCompatActivity {
                             }
                             else
                             {
+                                progressDialog.dismiss();
                                 String msg = task.getException().getMessage();
                                 Toast.makeText(ForgotPassword.this, "Error: "+msg, Toast.LENGTH_LONG).show();
                                 
