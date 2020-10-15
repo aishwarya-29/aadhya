@@ -59,12 +59,12 @@ public class ForgotPassword extends AppCompatActivity {
                                 progressDialog.dismiss();
                                 String msg = task.getException().getMessage();
                                 Toast.makeText(ForgotPassword.this, "Error: "+msg, Toast.LENGTH_LONG).show();
-                                
+
                             }
                         }
 
 
-                });
+                    });
                 }
             }
         });
