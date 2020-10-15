@@ -26,7 +26,7 @@ public class ForgotPassword extends AppCompatActivity {
         bu = findViewById(R.id.btn_mail);
         ed= findViewById(R.id.forgmail);
         mAuth= FirebaseAuth.getInstance();
-        ed.setOnClickListener(new View.OnClickListener() {
+        bu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String mail = ed.getText().toString();
@@ -50,12 +50,12 @@ public class ForgotPassword extends AppCompatActivity {
                             {
                                 String msg = task.getException().getMessage();
                                 Toast.makeText(ForgotPassword.this, "Error: "+msg, Toast.LENGTH_LONG).show();
-                                
+
                             }
                         }
 
 
-                });
+                    });
                 }
             }
         });
