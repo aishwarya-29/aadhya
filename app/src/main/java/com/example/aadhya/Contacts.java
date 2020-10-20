@@ -10,11 +10,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
-import android.content.ContentUris;
+
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -24,19 +22,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -67,8 +59,24 @@ public class Contacts extends Fragment {
     View v;
     FloatingActionButton b;
     public Drawable icon;
-    String currentUserEmail;
+    String currentUserId;
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    public void onDataChange(){
+        currentUserId = currentUser.getUid();
+        Query query = FirebaseDatabase.getInstance().getReference().child("User").child(currentUserId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()) {
+                    snapshot.getRef().child("Contacts").setValue(contactno);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -97,27 +105,39 @@ public class Contacts extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case 111:
-                    Cursor cursor;
-                    try {                        final String name, number, picture;
-                        Uri uri = data.getData();
-                        assert uri != null;
-                        cursor = Objects.requireNonNull(getActivity()).getContentResolver().query(uri, null, null, null, null);
-                        if (cursor != null) {
-                            cursor.moveToFirst();
-                        }
-                        int phno = cursor != null ? cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER) : 0;
-                        assert cursor != null;
-                        int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+            if (requestCode == 111) {
+                Cursor cursor;
+                try {
+                    final String name, number, picture;
+                    Uri uri = data.getData();
+                    assert uri != null;
+                    cursor = Objects.requireNonNull(getActivity()).getContentResolver().query(uri, null, null, null, null);
+                    if (cursor != null) {
+                        cursor.moveToFirst();
+                    }
+                    int phno = cursor != null ? cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER) : 0;
+                    assert cursor != null;
+                    int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
 
-                        number = cursor.getString(phno);
-                        name = cursor.getString(nameIndex);
+                    number = cursor.getString(phno);
+                    name = cursor.getString(nameIndex);
 
-                        if(contactno.indexOf(number)!=-1){
+                    if (contactno.indexOf(number) != -1) {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
+                        builder.setTitle("Duplicate contact");
+                        builder.setMessage("Contact number already added!!");
+                        builder.setNegativeButton("Okay", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+                        builder.show();
+                    } else {
+                        if (contactno.size() >= 5) {
                             final AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
-                            builder.setTitle("Duplicate contact");
-                            builder.setMessage("Contact number already added!!");
+                            builder.setTitle("Contact limit reached!");
+                            builder.setMessage("Delete a few contacts to add others! Only 5 contacts can be added");
                             builder.setNegativeButton("Okay", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -125,53 +145,21 @@ public class Contacts extends Fragment {
                                 }
                             });
                             builder.show();
+                        } else {
+                            contactNames.add(name);
+                            contactno.add(number);
+                            onDataChange();
+                            imageid.add(R.drawable.user);
+                            ca.notifyDataSetChanged();
                         }
-                        else {
-                            if(contactno.size()>=5){
-                                final AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
-                                builder.setTitle("Contact limit reached!");
-                                builder.setMessage("Delete a few contacts to add others! Only 5 contacts can be added");
-                                builder.setNegativeButton("Okay", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        dialogInterface.cancel();
-                                    }
-                                });
-                                builder.show();
-                            }
-                            else{
-                                contactNames.add(name);
-                                contactno.add(number);
-                                currentUserEmail = currentUser.getEmail();
-                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                                Query query = reference.child("users").orderByChild("uemail").equalTo(currentUserEmail);
-                                query.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if(snapshot.exists()) {
 
-
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-
-                                    }
-                                });
-                                imageid.add(R.drawable.user);
-                                ca.notifyDataSetChanged();
-                            }
-
-                        }
-                        cursor.close();
                     }
-                    catch (Exception e) {
-                        StringWriter errors = new StringWriter();
-                        e.printStackTrace(new PrintWriter(errors));
-                        Log.i("hey",errors.toString());
-                    }
-                    break;
+                    cursor.close();
+                } catch (Exception e) {
+                    StringWriter errors = new StringWriter();
+                    e.printStackTrace(new PrintWriter(errors));
+                    Log.i("hey", errors.toString());
+                }
             }
         }
     }
@@ -197,6 +185,7 @@ public class Contacts extends Fragment {
                 contactno.remove(viewHolder.getAdapterPosition());
                 imageid.remove(viewHolder.getAdapterPosition());
                 ca.notifyDataSetChanged();
+                onDataChange();
             Snackbar snackbar= Snackbar.make(Objects.requireNonNull(getView()),"You just deleted a contact", BaseTransientBottomBar.LENGTH_LONG);
             snackbar.setDuration(10000);
             snackbar.setAction("UNDO", new View.OnClickListener() {
@@ -206,6 +195,7 @@ public class Contacts extends Fragment {
                         contactno.add(position, tempNo);
                         imageid.add(position, tempImgid);
                         ca.notifyDataSetChanged();
+                        onDataChange();
                 }
             });
             snackbar.show();

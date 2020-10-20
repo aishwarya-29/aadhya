@@ -129,7 +129,7 @@
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/tvpassconf"
-        android:layout_width="40dp"
+        android:layout_width="307dp"
         android:layout_height="0dp"
         android:layout_marginStart="52dp"
         android:layout_marginLeft="52dp"

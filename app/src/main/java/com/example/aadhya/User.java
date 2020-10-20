@@ -13,7 +13,7 @@ class User {
     public String umobno;
     public String upin;
     public String uadhaar;
-    public String[] contacts;
+    public ArrayList<String> contacts;
     public ArrayList<String> cname= new ArrayList<>();
     public static ArrayList <String> cno = new ArrayList<>();
     User()
@@ -23,7 +23,7 @@ class User {
         umobno="";
         upin="";
         uadhaar="";
-        contacts= new String[0];
+        contacts= new ArrayList<>();
     }
 
     User(String uname, String uemail, String umobno, String upin,String uadhaar)
@@ -33,5 +33,6 @@ class User {
         this.umobno=umobno;
         this.upin=upin;
         this.uadhaar=uadhaar;
+        this.contacts= new ArrayList<>();
     }
 }

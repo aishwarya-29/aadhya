@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -62,7 +63,7 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
 
             String r1 = pwd.getText().toString();
             String str1 = pwd2.getText().toString();
-            if (r1.equals(str1)) {;
+            if (r1.equals(str1)) {
                 flaga = 1;
             } else {
                 progressDialog.dismiss();
@@ -114,15 +115,23 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
         String p= pin.getText().toString();
         String pd =pwd.getText().toString();
         String aa = aadhar.getText().toString();
-        User user1 = new User(n,e,m,p,aa);
-        String userid= n;
-        DatabaseReference reference;
-        reference = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference newRef = reference.child("User").push();
-        newRef.setValue(user1);
-        auth.createUserWithEmailAndPassword(e,pd);
-        progressDialog.dismiss();
-        Intent i = new Intent(signUp.this, MainScreen.class);
-        startActivity(i);
+        final User user1 = new User(n,e,m,p,aa);
+        auth.createUserWithEmailAndPassword(e,pd).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    FirebaseUser user=auth.getCurrentUser();
+                    assert user != null;
+                    String uid = user.getUid();
+                    DatabaseReference reference;
+                    reference = FirebaseDatabase.getInstance().getReference();
+                    reference.child("User").child(uid).setValue(user1);
+                    progressDialog.dismiss();
+                    Intent i = new Intent(signUp.this, MainScreen.class);
+                    startActivity(i);
+                }
+            }
+        });
+
     }
 }
