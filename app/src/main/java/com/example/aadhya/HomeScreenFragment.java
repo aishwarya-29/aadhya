@@ -122,9 +122,7 @@ public class HomeScreenFragment extends Fragment {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
         dialog.setTitle("Sending for help...");
         dialog.setMessage("Enter your secret PIN to cancel alert");
-
         final EditText input = new EditText(getContext());
-
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         dialog.setView(input);
 
@@ -185,7 +183,6 @@ public class HomeScreenFragment extends Fragment {
 
         } else {
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
             } else {
                 startRecording();
@@ -193,13 +190,17 @@ public class HomeScreenFragment extends Fragment {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void sendSMS() {
-        Contacts contacts = new Contacts();
         ArrayList<String> contactno = Contacts.contactno;
-        SmsManager sms = SmsManager.getDefault();
-        String message="Testing our App [Aadhya]";
-        for(String no: contactno){
-            sms.sendTextMessage(no,null, message,null, null);
+        if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, 0);
+        } else{
+            SmsManager sms = SmsManager.getDefault();
+            String message = "Testing our App [Aadhya]";
+            for (String no : contactno) {
+                sms.sendTextMessage(no, null, message, null, null);
+            }
         }
     }
 

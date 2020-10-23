@@ -45,6 +45,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
@@ -68,7 +70,10 @@ public class Contacts extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()) {
-                    snapshot.getRef().child("Contacts").setValue(contactno);
+                    Map<String,String> mp = new HashMap<>();
+                    for(int i=0;i<contactno.size();i++)
+                     mp.put(contactno.get(i), contactNames.get(i));
+                    snapshot.getRef().child("Contacts").setValue(mp);
                 }
             }
             @Override
@@ -89,6 +94,32 @@ public class Contacts extends Fragment {
         rc.setAdapter(ca);
         rc.setLayoutManager(new LinearLayoutManager(getContext()));
         new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(rc);
+
+        currentUserId = currentUser.getUid();
+        Query query = FirebaseDatabase.getInstance().getReference().child("User").child(currentUserId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.child("Contacts").exists()){
+                    for (DataSnapshot item:snapshot.child("Contacts").getChildren()) {
+                        if(!contactno.contains(item.getKey())){
+                            contactno.add(item.getKey());
+                            contactNames.add((String) item.getValue());
+                            imageid.add(R.drawable.user);
+                            ca.notifyDataSetChanged();
+                        }
+
+                    }
+
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
         b=v.findViewById(R.id.contactBtn);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
