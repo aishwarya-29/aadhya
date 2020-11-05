@@ -120,6 +120,10 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
         reference = FirebaseDatabase.getInstance().getReference();
         DatabaseReference newRef = reference.child("User").push();
         newRef.setValue(user1);
+        String key = newRef.getKey();
+        StringBuilder sb = new StringBuilder(key);
+        sb.deleteCharAt(0);
+        newRef.child("key").setValue(sb.toString());
         auth.createUserWithEmailAndPassword(e,pd);
         progressDialog.dismiss();
         Intent i = new Intent(signUp.this, MainScreen.class);

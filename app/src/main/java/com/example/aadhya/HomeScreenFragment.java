@@ -67,6 +67,7 @@ public class HomeScreenFragment extends Fragment {
     boolean SOSMode = false;
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     String currentUserEmail;
+    String userID;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -79,6 +80,7 @@ public class HomeScreenFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot ds : snapshot.getChildren()){
                     pin = ds.child("upin").getValue(String.class);
+                    userID = ds.child("key").getValue(String.class);
                 }
             }
 
@@ -191,7 +193,7 @@ public class HomeScreenFragment extends Fragment {
         Contacts contacts = new Contacts();
         ArrayList<String> contactno = contacts.contactno;
         SmsManager sms = SmsManager.getDefault();
-        String message="SOS. I'm in trouble. Open the app to view my location.";
+        String message="SOS. I'm in trouble. Follow the link to view my location. http://www.aadhya.com/track/" + userID;
         for(String no: contactno){
             sms.sendTextMessage(no,null, message,null, null);
         }

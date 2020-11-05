@@ -12,7 +12,7 @@ class User {
     public String uemail;
     public String umobno;
     public String upin;
-    public String uadhaar;
+    public String uadhaar, key;
     public String[] contacts;
     public ArrayList<String> cname= new ArrayList<>();
     public static ArrayList <String> cno = new ArrayList<>();
@@ -23,6 +23,7 @@ class User {
         umobno="";
         upin="";
         uadhaar="";
+        key="";
         contacts= new String[0];
     }
 

@@ -16,8 +16,6 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
     Button signIn,signUp, mainscreen;
-    ConstraintLayout constraintLayout;
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-        constraintLayout=findViewById(R.id.container);
     }
     public void signUp(View view)
     {
