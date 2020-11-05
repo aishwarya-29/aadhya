@@ -194,12 +194,15 @@ public class HomeScreenFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void sendSMS() {
-        Contacts contacts = new Contacts();
-        ArrayList<String> contactno = contacts.contactno;
-        SmsManager sms = SmsManager.getDefault();
-        String message="SOS. I'm in trouble. Follow the link to view my location. http://www.aadhya.com/track/" + userID;
-        for(String no: contactno){
-            sms.sendTextMessage(no,null, message,null, null);
+        if (ActivityCompat.checkSelfPermission(getActivity(),Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.SEND_SMS}, 0);
+        } else {
+            ArrayList<String> contactno = Contacts.contactno;
+            SmsManager sms = SmsManager.getDefault();
+            String message="SOS. I'm in trouble. Follow the link to view my location. http://www.aadhya.com/track/" + userID;
+            for(String no: contactno){
+                sms.sendTextMessage(no,null, message,null, null);
+            }
         }
     }
 

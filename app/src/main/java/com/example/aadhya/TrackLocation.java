@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,7 +32,6 @@ public class TrackLocation extends AppCompatActivity {
         uri = getIntent().getData();
         List<String> params = uri.getPathSegments();
         userID = params.get(1);
-        Toast.makeText(this, userID, Toast.LENGTH_SHORT).show();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("User").orderByChild("key").equalTo(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

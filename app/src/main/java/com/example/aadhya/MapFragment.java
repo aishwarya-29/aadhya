@@ -2,13 +2,16 @@ package com.example.aadhya;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -42,6 +45,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -54,6 +58,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     String currentUserEmail;
     private DatabaseReference databaseReference;
     LocationListener locationListener;
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -61,20 +66,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         currentUserEmail = currentUser.getEmail();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
         final Handler myHandler = new Handler();
-        final int delay = 5000; // 1000 milliseconds == 1 second
         fetchLastLocation();
-        myHandler.postDelayed(new Runnable() {
-            public void run() {
-                fetchLastLocation();
-                myHandler.postDelayed(this, delay);
-            }
-        }, delay);
+//        final int delay = 1000; // 1000 milliseconds == 1 second
+//        fetchLastLocation();
+//        myHandler.postDelayed(new Runnable() {
+//            public void run() {
+//
+//                myHandler.postDelayed(this, delay);
+//            }
+//        }, delay);
         return view;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void fetchLastLocation() {
         if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+            ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
 
             return;
         }
@@ -120,6 +127,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         googleMap.addMarker(markerOptions);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {

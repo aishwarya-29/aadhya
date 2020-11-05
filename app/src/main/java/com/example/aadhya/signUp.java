@@ -115,7 +115,7 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
         String p= pin.getText().toString();
         String pd =pwd.getText().toString();
         String aa = aadhar.getText().toString();
-        User user1 = new User(n,e,m,p,aa);
+        final User user1 = new User(n,e,m,p,aa);
         String userid= n;
         DatabaseReference reference;
         reference = FirebaseDatabase.getInstance().getReference();
@@ -129,7 +129,6 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
         progressDialog.dismiss();
         Intent i = new Intent(signUp.this, MainScreen.class);
         startActivity(i);
-        final User user1 = new User(n,e,m,p,aa);
         auth.createUserWithEmailAndPassword(e,pd).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
