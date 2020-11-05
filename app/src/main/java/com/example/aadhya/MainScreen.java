@@ -48,6 +48,7 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
     }
     Contacts contacts= new Contacts();
     Home home = new Home();
+    Chat chat = new Chat();
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
@@ -56,6 +57,9 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
                 return true;
             case R.id.nav_contacts:
                 getSupportFragmentManager().beginTransaction().replace(R.id.frag_container, contacts).commit();
+                return true;
+            case R.id.nav_fav:
+                getSupportFragmentManager().beginTransaction().replace(R.id.frag_container, chat).commit();
                 return true;
         }
         return false;
