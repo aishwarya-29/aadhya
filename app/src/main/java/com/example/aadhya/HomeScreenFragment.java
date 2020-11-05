@@ -14,9 +14,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -54,6 +56,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -121,13 +124,12 @@ public class HomeScreenFragment extends Fragment {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
         dialog.setTitle("Sending for help...");
         dialog.setMessage("Enter your secret PIN to cancel alert");
-
         final EditText input = new EditText(getContext());
-
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         dialog.setView(input);
 
         dialog.setPositiveButton("SOS", new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 sendAlerts();
@@ -152,6 +154,7 @@ public class HomeScreenFragment extends Fragment {
         alert.show();
         final Handler handler = new Handler();
         final Runnable runnable = new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void run() {
                 if (alert.isShowing()) {
@@ -171,17 +174,17 @@ public class HomeScreenFragment extends Fragment {
         handler.postDelayed(runnable, 10000);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void sendAlerts() {
         SOSMode = true;
         Toast.makeText(getContext(),"Sending alerts to all your contacts. Contact 911 for immediate assistance.", Toast.LENGTH_LONG).show();
         sendSMS();
 
-        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.RECORD_AUDIO}, 0);
 
         } else {
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
             } else {
                 startRecording();
@@ -189,6 +192,7 @@ public class HomeScreenFragment extends Fragment {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void sendSMS() {
         Contacts contacts = new Contacts();
         ArrayList<String> contactno = contacts.contactno;
@@ -199,9 +203,10 @@ public class HomeScreenFragment extends Fragment {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void startRecording() {
         try {
-            audioFile = File.createTempFile("sound",".3gp", getActivity().getExternalFilesDir(null));
+            audioFile = File.createTempFile("sound",".3gp", Objects.requireNonNull(getActivity()).getExternalFilesDir(null));
         } catch (IOException e) {
             e.printStackTrace();
             Log.e("media recording","external storage access error");
