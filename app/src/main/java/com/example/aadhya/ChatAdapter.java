@@ -2,23 +2,18 @@ package com.example.aadhya;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,35 +24,33 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyChatHolder> {
-    ArrayList<String> chatTitles= new ArrayList<>();
+    ArrayList<String> chatTitles = new ArrayList<>();
     ArrayList<Integer> replyCount, likeCount, bgImages;
     Context context;
-    Map <String, Map<String, ArrayList<String>>>comments;
-    ArrayList <Integer> Liked;
+    Map<String, Map<String, ArrayList<String>>> comments;
+    ArrayList<Integer> Liked;
     OnChatListener onChatListener;
 
 
-    public ChatAdapter(Context ct,  Map <String, Map<String, ArrayList<String>>>c, ArrayList<Integer>lc,  ArrayList<Integer> bg, ArrayList<Integer> lk,  OnChatListener onChatListener){
-        context=ct;
-        comments=c;
-        likeCount=lc;
-        bgImages=bg;
-        Liked=lk;
+    public ChatAdapter(Context ct, Map<String, Map<String, ArrayList<String>>> c, ArrayList<Integer> lc, ArrayList<Integer> bg, ArrayList<Integer> lk, OnChatListener onChatListener) {
+        context = ct;
+        comments = c;
+        likeCount = lc;
+        bgImages = bg;
+        Liked = lk;
         chatTitles.addAll(comments.keySet());
-        this.onChatListener=onChatListener;
+        this.onChatListener = onChatListener;
     }
 
     @NonNull
     @Override
     public MyChatHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater= LayoutInflater.from(parent.getContext());
-        View view=inflater.inflate(R.layout.chat_adapter, parent, false);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View view = inflater.inflate(R.layout.chat_adapter, parent, false);
         view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
         return new MyChatHolder(view, onChatListener);
     }
@@ -69,7 +62,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyChatHolder> 
         holder.title.setText(chatTitles.get(position));
         holder.replies.setText(String.valueOf(comments.get(chatTitles.get(position)).size()));
         holder.bg.setImageResource(bgImages.get(position));
-        final TextView likes=holder.likes;
+        final TextView likes = holder.likes;
         holder.likes.setText(likeCount.get(position).toString());
         holder.lk.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("UseCompatLoadingForDrawables")
@@ -111,7 +104,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyChatHolder> 
             }
         });
 
-        if(Liked.contains(position))
+        if (Liked.contains(position))
             DrawableCompat.setTint(holder.lk.getDrawable(), ContextCompat.getColor(context, R.color.pink));
         else
             DrawableCompat.setTint(holder.lk.getDrawable(), ContextCompat.getColor(context, R.color.white));
@@ -127,14 +120,15 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyChatHolder> 
         TextView title, likes, replies;
         ImageView bg, lk;
         OnChatListener onChatListener;
+
         public MyChatHolder(@NonNull View itemView, OnChatListener onChatListener) {
             super(itemView);
-            title=itemView.findViewById(R.id.chatTitle);
-            likes=itemView.findViewById(R.id.chatLikes);
-            replies=itemView.findViewById(R.id.chatReplies);
-            bg=itemView.findViewById(R.id.chatBg);
-            lk=itemView.findViewById(R.id.imageView5);
-            this.onChatListener=onChatListener;
+            title = itemView.findViewById(R.id.chatTitle);
+            likes = itemView.findViewById(R.id.chatLikes);
+            replies = itemView.findViewById(R.id.chatReplies);
+            bg = itemView.findViewById(R.id.chatBg);
+            lk = itemView.findViewById(R.id.imageView5);
+            this.onChatListener = onChatListener;
 
             itemView.setOnClickListener(this);
 
@@ -146,7 +140,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyChatHolder> 
             onChatListener.onChatClick(getAdapterPosition());
         }
     }
-    public interface OnChatListener{
+
+    public interface OnChatListener {
         void onChatClick(int position);
     }
 

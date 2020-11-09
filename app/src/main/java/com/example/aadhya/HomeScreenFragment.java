@@ -5,28 +5,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.ProgressDialog;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
-import android.os.Environment;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.telephony.SmsManager;
 import android.text.InputType;
 import android.util.Log;
@@ -36,29 +20,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Objects;
-
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class HomeScreenFragment extends Fragment {
     Button help, stopRecording, help2;
@@ -71,17 +52,18 @@ public class HomeScreenFragment extends Fragment {
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     String currentUserEmail;
     String userID;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View v= inflater.inflate(R.layout.fragment_home_screen, container, false);
+        View v = inflater.inflate(R.layout.fragment_home_screen, container, false);
         currentUserEmail = currentUser.getEmail();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child("User").orderByChild("uemail").equalTo(currentUserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot ds : snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     pin = ds.child("upin").getValue(String.class);
                     userID = ds.child("key").getValue(String.class);
                 }
@@ -98,7 +80,7 @@ public class HomeScreenFragment extends Fragment {
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!SOSMode) {
+                if (!SOSMode) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
                     builder.setTitle("Are you sure?");
                     builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -141,11 +123,11 @@ public class HomeScreenFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String s = input.getText().toString();
-                if(s.equals(pin)) {
-                    Toast.makeText(getContext(),"Cancelled alerts", Toast.LENGTH_SHORT).show();
+                if (s.equals(pin)) {
+                    Toast.makeText(getContext(), "Cancelled alerts", Toast.LENGTH_SHORT).show();
                     dialogInterface.cancel();
                 } else {
-                    Toast.makeText(getContext(),"Invalid PIN", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Invalid PIN", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -177,7 +159,7 @@ public class HomeScreenFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void sendAlerts() {
         SOSMode = true;
-        Toast.makeText(getContext(),"Sending alerts to all your contacts. Contact 911 for immediate assistance.", Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), "Sending alerts to all your contacts. Contact 911 for immediate assistance.", Toast.LENGTH_LONG).show();
         sendSMS();
 
         if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -194,14 +176,14 @@ public class HomeScreenFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void sendSMS() {
-        if (ActivityCompat.checkSelfPermission(getActivity(),Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED){
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.SEND_SMS}, 0);
         } else {
             ArrayList<String> contactno = Contacts.contactno;
             SmsManager sms = SmsManager.getDefault();
-            String message="SOS. I'm in trouble. Follow the link to view my location. http://www.aadhya.com/track/" + userID;
-            for(String no: contactno){
-                sms.sendTextMessage(no,null, message,null, null);
+            String message = "SOS. I'm in trouble. Follow the link to view my location. http://www.aadhya.com/track/" + userID;
+            for (String no : contactno) {
+                sms.sendTextMessage(no, null, message, null, null);
             }
         }
     }
@@ -209,10 +191,10 @@ public class HomeScreenFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void startRecording() {
         try {
-            audioFile = File.createTempFile("sound",".3gp", Objects.requireNonNull(getActivity()).getExternalFilesDir(null));
+            audioFile = File.createTempFile("sound", ".3gp", Objects.requireNonNull(getActivity()).getExternalFilesDir(null));
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("media recording","external storage access error");
+            Log.e("media recording", "external storage access error");
             return;
         }
 
@@ -237,7 +219,7 @@ public class HomeScreenFragment extends Fragment {
         });
     }
 
-    private void startButtonAnimation(){
+    private void startButtonAnimation() {
         help2.setVisibility(View.VISIBLE);
         fadeOut = ObjectAnimator.ofFloat(help2, "alpha", .5f, .1f);
         fadeOut.setDuration(300);
@@ -257,7 +239,7 @@ public class HomeScreenFragment extends Fragment {
     }
 
     private void stopAlerts() {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(new ContextThemeWrapper(getContext(),R.style.AlertDialogCustom));
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
         dialog.setTitle("False Alarm?");
         dialog.setMessage("Enter your secret PIN to cancel alert");
 
@@ -270,17 +252,17 @@ public class HomeScreenFragment extends Fragment {
         dialog.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if(input.getText().toString().equals(pin)) {
+                if (input.getText().toString().equals(pin)) {
                     SOSMode = false;
                     mediaRecorder.stop();
                     stopRecording.setVisibility(View.INVISIBLE);
                     mediaRecorder.release();
-                    Toast.makeText(getContext(),"stopped", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "stopped", Toast.LENGTH_SHORT).show();
                     help2.setVisibility(View.INVISIBLE);
                     mAnimationSet.end();
                     mAnimationSet.cancel();
                 } else {
-                    Toast.makeText(getContext(),"Invalid PIN", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Invalid PIN", Toast.LENGTH_SHORT).show();
                 }
             }
         });

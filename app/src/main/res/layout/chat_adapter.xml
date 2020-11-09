@@ -35,6 +35,7 @@
                     android:id="@+id/chatBg"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:scaleType="fitXY"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -42,6 +43,8 @@
 
                 <TextView
                     android:id="@+id/chatTitle"
+                    android:layout_margin="5sp"
+                    android:padding="20sp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#80000000"
@@ -105,8 +108,8 @@
                     android:layout_marginRight="18dp"
                     android:layout_marginBottom="25dp"
                     android:text="0"
-                    android:textSize="20dp"
                     android:textColor="#fff"
+                    android:textSize="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -140,8 +143,8 @@
                     android:layout_marginEnd="17dp"
                     android:layout_marginRight="17dp"
                     android:text="0"
-                    android:textSize="20dp"
                     android:textColor="#fff"
+                    android:textSize="20dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>

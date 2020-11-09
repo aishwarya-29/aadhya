@@ -1,21 +1,15 @@
 package com.example.aadhya;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
-import android.widget.TextView;
 
-import java.util.Calendar;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-    Button signIn,signUp, mainscreen;
+    Button signIn, signUp, mainscreen;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,21 +29,21 @@ public class MainActivity extends AppCompatActivity {
         mainscreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i= new Intent(MainActivity.this, MainScreen.class);
+                Intent i = new Intent(MainActivity.this, MainScreen.class);
                 startActivity(i);
             }
         });
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i= new Intent(MainActivity.this, LoginActivity.class);
+                Intent i = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(i);
             }
         });
     }
-    public void signUp(View view)
-    {
-        Intent click= new Intent(MainActivity.this, signUp.class);
+
+    public void signUp(View view) {
+        Intent click = new Intent(MainActivity.this, signUp.class);
         startActivity(click);
         finish();
     }
