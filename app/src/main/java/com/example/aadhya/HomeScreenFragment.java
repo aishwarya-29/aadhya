@@ -210,7 +210,7 @@ public class HomeScreenFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot ds : snapshot.getChildren()){
-                    if(ds.child("Location").child("Latitude").getValue(Double.class) != null && userID.equals(ds.child("key").getValue(String.class))) {
+                    if(ds.child("Location").child("Latitude").getValue(Double.class) != null && !userID.equals(ds.child("key").getValue(String.class))) {
                         //Toast.makeText(getContext(), " " + ds.child("Location").child("Latitude").getValue(Double.class), Toast.LENGTH_SHORT).show();
                         if((Math.abs(ds.child("Location").child("Latitude").getValue(Double.class) - latitude) < 0.4) || (Math.abs(ds.child("Location").child("Longitude").getValue(Double.class) - longitude) < 0.4) ){
                            //Toast.makeText(getContext(), ds.child("uname").getValue(String.class), Toast.LENGTH_LONG).show();
