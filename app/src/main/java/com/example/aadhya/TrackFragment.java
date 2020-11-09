@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -54,6 +55,7 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
                 for(DataSnapshot ds : snapshot.getChildren()){
                     latitude = (Double) ds.child("Location").child("Latitude").getValue();
                     longitude = (Double) ds.child("Location").child("Longitude").getValue();
+                    setLocation();
                 }
             }
 
@@ -62,14 +64,6 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
 
             }
         });
-
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        setLocation();
-                    }
-                },
-                2000);
         return view;
     }
 
