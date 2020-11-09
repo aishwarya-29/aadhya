@@ -71,11 +71,13 @@ public class HomeScreenFragment extends Fragment {
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     String currentUserEmail;
     String userID;
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View v= inflater.inflate(R.layout.fragment_home_screen, container, false);
+        getActivity().startService(new Intent(getActivity(), LocationMonitor.class));
         currentUserEmail = currentUser.getEmail();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child("User").orderByChild("uemail").equalTo(currentUserEmail).addListenerForSingleValueEvent(new ValueEventListener() {

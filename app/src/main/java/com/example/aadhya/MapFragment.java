@@ -57,7 +57,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     String currentUserEmail;
     private DatabaseReference databaseReference;
-    LocationListener locationListener;
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,16 +64,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         view = inflater.inflate(R.layout.fragment_map, container, false);
         currentUserEmail = currentUser.getEmail();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        final Handler myHandler = new Handler();
         fetchLastLocation();
-//        final int delay = 1000; // 1000 milliseconds == 1 second
-//        fetchLastLocation();
-//        myHandler.postDelayed(new Runnable() {
-//            public void run() {
-//
-//                myHandler.postDelayed(this, delay);
-//            }
-//        }, delay);
         return view;
     }
 
@@ -95,21 +85,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     supportMapFragment.getMapAsync(MapFragment.this);
                 }
 
-                databaseReference = FirebaseDatabase.getInstance().getReference();
-                databaseReference.child("User").orderByChild("uemail").equalTo(currentUserEmail).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for(DataSnapshot ds : snapshot.getChildren()){
-                            ds.getRef().child("Location").child("Latitude").setValue(currentLocation.getLatitude());
-                            ds.getRef().child("Location").child("Longitude").setValue(currentLocation.getLongitude());
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+//                databaseReference = FirebaseDatabase.getInstance().getReference();
+//                databaseReference.child("User").orderByChild("uemail").equalTo(currentUserEmail).addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        for(DataSnapshot ds : snapshot.getChildren()){
+//                            ds.getRef().child("Location").child("Latitude").setValue(currentLocation.getLatitude());
+//                            ds.getRef().child("Location").child("Longitude").setValue(currentLocation.getLongitude());
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {
+//
+//                    }
+//                });
 
             }
         });
