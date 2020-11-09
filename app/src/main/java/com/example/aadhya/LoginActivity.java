@@ -2,6 +2,7 @@ package com.example.aadhya;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -53,13 +54,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Toast.makeText(getApplicationContext(), "Invalid email address", Toast.LENGTH_SHORT).show();;
             }
             else {
-                String login_email = email.getText().toString();
-                String login_password = password.getText().toString();
+                final String login_email = email.getText().toString();
+                final String login_password = password.getText().toString();
                 auth.signInWithEmailAndPassword(login_email, login_password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
                             progressDialog.dismiss();
+                            saveUserInformation(login_email,login_password);
                             Intent i=new Intent(LoginActivity.this, MainScreen.class);
                             startActivity(i);
                             finish();
@@ -72,6 +74,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         }
     }
+
+    private void saveUserInformation(String email, String password) {
+        SharedPreferences shared = getSharedPreferences("shared", MODE_PRIVATE);
+        SharedPreferences.Editor editor = shared.edit();
+        editor.putString("email", email);
+        editor.putString("password", password);
+        editor.commit();
+    }
+
     public void su(View v)
     {
         Intent i = new Intent(LoginActivity.this,signUp.class);
