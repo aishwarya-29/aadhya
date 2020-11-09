@@ -71,6 +71,9 @@ public class HomeScreenFragment extends Fragment {
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     String currentUserEmail;
     String userID;
+    String currentUserName;
+    String currentUserNumber;
+    Double latitude, longitude;
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,6 +89,10 @@ public class HomeScreenFragment extends Fragment {
                 for(DataSnapshot ds : snapshot.getChildren()){
                     pin = ds.child("upin").getValue(String.class);
                     userID = ds.child("key").getValue(String.class);
+                    currentUserName = ds.child("uname").getValue(String.class);
+                    currentUserNumber = ds.child("umobno").getValue(String.class);
+                    latitude = ds.child("Location").child("Latitude").getValue(Double.class);
+                    longitude = ds.child("Location").child("Longitude").getValue(Double.class);
                 }
             }
 
@@ -192,6 +199,37 @@ public class HomeScreenFragment extends Fragment {
                 startRecording();
             }
         }
+        sendToNearbyUsers();
+    }
+
+    private void sendToNearbyUsers() {
+        Toast.makeText(getContext(), "toast test" + latitude + " " + longitude, Toast.LENGTH_SHORT).show();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User");
+        final ArrayList<String> contactList = new ArrayList<String>();
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot ds : snapshot.getChildren()){
+                    if(ds.child("Location").child("Latitude").getValue(Double.class) != null && userID.equals(ds.child("key").getValue(String.class))) {
+                        //Toast.makeText(getContext(), " " + ds.child("Location").child("Latitude").getValue(Double.class), Toast.LENGTH_SHORT).show();
+                        if((Math.abs(ds.child("Location").child("Latitude").getValue(Double.class) - latitude) < 0.4) || (Math.abs(ds.child("Location").child("Longitude").getValue(Double.class) - longitude) < 0.4) ){
+                           //Toast.makeText(getContext(), ds.child("uname").getValue(String.class), Toast.LENGTH_LONG).show();
+                           String contactNumber = ds.child("umobno").getValue(String.class);
+                            Toast.makeText(getContext(), ds.child("umobno").getValue(String.class), Toast.LENGTH_LONG).show();
+                            contactList.add(contactNumber);
+                            sendSMS2(contactNumber);
+                       }
+                    } else {
+                        //Toast.makeText(getContext(), "no", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -205,6 +243,17 @@ public class HomeScreenFragment extends Fragment {
             for(String no: contactno){
                 sms.sendTextMessage(no,null, message,null, null);
             }
+        }
+    }
+
+    private void sendSMS2(String contactno) {
+        Toast.makeText(getContext(), "Here we are" + contactno, Toast.LENGTH_SHORT).show();
+        if (ActivityCompat.checkSelfPermission(getActivity(),Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.SEND_SMS}, 0);
+        } else {
+            SmsManager sms = SmsManager.getDefault();
+            String message="SOS. This is " + currentUserName + ". I'm in trouble. Follow the link to view my location: http://www.aadhya.com/track/" + userID;
+            sms.sendTextMessage(contactno,null, message,null, null);
         }
     }
 

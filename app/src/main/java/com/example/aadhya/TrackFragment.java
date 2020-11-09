@@ -55,6 +55,7 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
                 for(DataSnapshot ds : snapshot.getChildren()){
                     latitude = (Double) ds.child("Location").child("Latitude").getValue();
                     longitude = (Double) ds.child("Location").child("Longitude").getValue();
+                    setLocation();
                 }
             }
 
@@ -63,14 +64,6 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
 
             }
         });
-
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        setLocation();
-                    }
-                },
-                3000);
         return view;
     }
 

@@ -53,8 +53,7 @@
             android:label="@string/app_name"
             tools:ignore="Instantiatable" />
         <activity
-            android:name=".LoginActivity"
-            android:windowSoftInputMode="adjustResize" />
+            android:name=".LoginActivity"/>
         <activity android:name=".TrackLocation">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
