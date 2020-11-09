@@ -28,19 +28,20 @@ import java.util.Map;
 
 
 public class ChatFragment extends Fragment implements ChatAdapter.OnChatListener {
-    static Map<String, ArrayList<String>> replies = new HashMap<String, ArrayList<String>>() {
-        {
-            put("Something Amazing", new ArrayList<String>() {{
-                add("I totally agree");
-            }});
-        }
-    };
-    public static Map<String, Map<String, ArrayList<String>>> comments = new HashMap<String, Map<String, ArrayList<String>>>() {{
-        put("Top Self Defense Techniques", replies);
-        put("Have you ever been a victim of abuse? Let your feelings out here!", replies);
-        put("Safety gadgets you know and want to share", replies);
-
-    }};
+//    static Map<String, ArrayList<String>> replies = new HashMap<String, ArrayList<String>>() {
+//        {
+//            put("Some Comment", new ArrayList<String>() {{
+//                add("I totally agree");
+//            }});
+//        }
+//    };
+    public static Map<String, Map<String, ArrayList<String>>> comments = new HashMap<String, Map<String, ArrayList<String>>>();
+//    {{
+//        put("Top Self Defense Techniques", replies);
+//        put("Have you ever been a victim of abuse? Let your feelings out here!", replies);
+//        put("Safety gadgets you know and want to share", replies);
+//
+//    }};
 
     public static void SetComments() {
         Query q = FirebaseDatabase.getInstance().getReference().child("Posts");
@@ -58,18 +59,36 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnChatListener
             }
         });
     }
+    public static void setLikes() {
+        Query q = FirebaseDatabase.getInstance().getReference().child("Posts");
+        q.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    snapshot.getRef().child("Like Count").setValue(likeCount);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
     RecyclerView rc;
     public static RecyclerView.Adapter ca;
     ImageView lk;
-    ArrayList<Integer> likeCount = new ArrayList<Integer>() {{
-        add(1);
-        add(0);
-        add(0);
-    }};
+    public static ArrayList<Integer> likeCount = new ArrayList<Integer>();
+//    {{
+//        add(1);
+//        add(0);
+//        add(0);
+//    }};
     ArrayList<Integer> liked = new ArrayList<>();
 
-    ArrayList<Integer> bgImages = new ArrayList<Integer>() {{
+    public  static ArrayList<Integer> bgImages = new ArrayList<Integer>()
+    {{
         add(R.drawable.defense);
         add(R.drawable.abuse);
         add(R.drawable.safety);
@@ -82,9 +101,9 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnChatListener
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_chat, container, false);
         rc = v.findViewById(R.id.chats);
-        SetComments();
-        FirebaseDatabase.getInstance().getReference().child("Posts").child("Comments").setValue(comments);
-        FirebaseDatabase.getInstance().getReference().child("Posts").child("Like Count").setValue(likeCount);
+//        SetComments();
+//        FirebaseDatabase.getInstance().getReference().child("Posts").child("Comments").setValue(comments);
+//        FirebaseDatabase.getInstance().getReference().child("Posts").child("Like Count").setValue(likeCount);
         ca = new ChatAdapter(getContext(), comments, likeCount, bgImages, liked, this);
         rc.setAdapter(ca);
         rc.setLayoutManager(new LinearLayoutManager(getContext()));

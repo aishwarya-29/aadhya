@@ -1,6 +1,7 @@
 package com.example.aadhya;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -24,8 +25,9 @@ public class Replies extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_replies);
         if (getIntent().hasExtra("Position")) {
-            final int position = getIntent().getIntExtra("Position", 0);
-            final int Postpos = getIntent().getIntExtra("Post Position", 0);
+            final int position = (int) getIntent().getExtras().get("Position");
+            final int Postpos = (int) getIntent().getExtras().get("Post position");
+            Log.i("hey", String.valueOf(position)+" "+Postpos);
             final ArrayList<String> chatTitles = new ArrayList<>(ChatFragment.comments.keySet());
             final String post = chatTitles.get(Postpos);
             ArrayList<String> comment = new ArrayList<>(ChatFragment.comments.get(post).keySet());
@@ -35,7 +37,7 @@ public class Replies extends AppCompatActivity {
             img = findViewById(R.id.commentImg);
             tv1 = findViewById(R.id.commentHead);
             b1=findViewById(R.id.addReply);
-            img.setImageResource(Home.userImg.get(Postpos % 35));
+            img.setImageResource(Home.userImg.get(position % 35));
             ed1=findViewById(R.id.postReply);
             tv1.setText(title.replaceAll("\\^","."));
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.reply_row, R.id.replyRow, replies);

@@ -82,6 +82,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyChatHolder> 
                     DrawableCompat.setTint(lk.getDrawable(), ContextCompat.getColor(context, R.color.pink));
                     likes.setText(likeCount.get(position).toString());
                 }
+                ChatFragment.setLikes();
                 String currentUserId;
                 FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                 assert currentUser != null;

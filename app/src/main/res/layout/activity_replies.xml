@@ -9,37 +9,49 @@
 
     <TextView
         android:id="@+id/commentHead"
-        android:layout_width="279dp"
+        android:layout_width="255dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="16dp"
         android:text="Comment"
         android:textColor="@color/white"
         android:textSize="20sp"
-        tools:layout_editor_absoluteX="104dp"
-        tools:layout_editor_absoluteY="29dp" />
+        app:layout_constraintStart_toEndOf="@+id/commentImg"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/commentImg"
         android:layout_width="64dp"
         android:layout_height="49dp"
-        app:srcCompat="@drawable/user"
-        tools:layout_editor_absoluteX="28dp"
-        tools:layout_editor_absoluteY="28dp" />
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/user" />
 
     <Button
         android:id="@+id/addReply"
         android:layout_width="56dp"
         android:layout_height="52dp"
+        android:layout_marginBottom="28dp"
         android:background="@drawable/add_button"
         android:text="+"
         android:textColor="@color/white"
         android:textSize="25sp"
-        tools:layout_editor_absoluteX="317dp"
-        tools:layout_editor_absoluteY="656dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toEndOf="@+id/postReply" />
 
     <EditText
         android:id="@+id/postReply"
         android:layout_width="249dp"
         android:layout_height="50dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginLeft="36dp"
+        android:layout_marginBottom="28dp"
         android:background="@drawable/custom_edit_text"
         android:drawableStart="@drawable/ic_baseline_brush_24"
         android:drawableLeft="@drawable/ic_baseline_brush_24"
@@ -51,14 +63,14 @@
         android:paddingRight="10sp"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
-        tools:layout_editor_absoluteX="50dp"
-        tools:layout_editor_absoluteY="658dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ListView
         android:id="@+id/replies"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="28dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/commentHead" />
 </androidx.constraintlayout.widget.ConstraintLayout>

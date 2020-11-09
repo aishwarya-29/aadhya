@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,6 +30,7 @@ public class Chat extends AppCompatActivity implements CommentAdapter.OnCommentL
     EditText ed1;
     Button b1;
     int position=0;
+    ImageView post, back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +39,8 @@ public class Chat extends AppCompatActivity implements CommentAdapter.OnCommentL
         title = findViewById(R.id.topic);
         ed1=findViewById(R.id.reply);
         b1=findViewById(R.id.addbtn);
+        post=findViewById(R.id.postImg);
+        back=findViewById(R.id.back);
         if (getIntent().hasExtra("Position")) {
            position = getIntent().getIntExtra("Position", 0);
             final ArrayList<String> chatTitles = new ArrayList<>(ChatFragment.comments.keySet());
@@ -45,6 +49,7 @@ public class Chat extends AppCompatActivity implements CommentAdapter.OnCommentL
             ca = new CommentAdapter(getApplicationContext(), ChatFragment.comments.get(chatTitles.get(position)),this);
             rc.setAdapter(ca);
             rc.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+            post.setImageResource(ChatFragment.bgImages.get(position));
             b1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
