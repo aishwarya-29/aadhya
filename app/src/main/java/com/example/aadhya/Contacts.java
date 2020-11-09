@@ -218,7 +218,7 @@ public class Contacts extends Fragment {
                 ca.notifyDataSetChanged();
                 onDataChange();
             Snackbar snackbar= Snackbar.make(Objects.requireNonNull(getView()),"You just deleted a contact", BaseTransientBottomBar.LENGTH_LONG);
-            snackbar.setDuration(10000);
+            snackbar.setDuration(3000);
             snackbar.setAction("UNDO", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

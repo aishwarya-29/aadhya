@@ -32,6 +32,8 @@
             android:enabled="true"
             android:exported="true"/>
 
+        <activity android:name=".Replies"></activity>
+        <activity android:name=".Chat" />
         <activity android:name=".MainScreen" />
         <activity android:name=".MainActivity">
             <intent-filter>
