@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.os.Build;
@@ -19,20 +20,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.os.Bundle;
-import android.view.View;
-import com.androidhiddencamera.HiddenCameraFragment;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
-import com.androidhiddencamera.HiddenCameraFragment;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -48,16 +48,16 @@ import java.util.Objects;
 
 public class HomeScreenFragment extends Fragment {
     Button help, stopRecording, help2;
-    String pin = "3333";
+    public static String pin = "3333";
     MediaRecorder mediaRecorder;
     File audioFile = null;
     AnimatorSet mAnimationSet;
     ObjectAnimator fadeOut, fadeIn;
-    boolean SOSMode = false;
+    static boolean SOSMode = false;
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     String currentUserEmail;
-    String userID;
-    private HiddenCameraFragment mHiddenCameraFragment;
+    public  static String userID;
+    SwitchCompat shakeswitch;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,6 +65,8 @@ public class HomeScreenFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_home_screen, container, false);
         currentUserEmail = currentUser.getEmail();
+        Contacts.setContacts();
+        getActivity().startService(new Intent(getActivity(),LocationMonitor.class));
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child("User").orderByChild("uemail").equalTo(currentUserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -83,6 +85,26 @@ public class HomeScreenFragment extends Fragment {
         help = v.findViewById(R.id.help);
         help2 = v.findViewById(R.id.help2);
         stopRecording = v.findViewById(R.id.stop_recording);
+        shakeswitch=v.findViewById(R.id.shakeSwitch);
+        shakeswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Intent shake= new Intent(getContext(), ShakeService.class);
+                if(b){
+                    Snackbar snackbar = Snackbar.make(Objects.requireNonNull(getView()), "Shake to send alerts is ENABLED", BaseTransientBottomBar.LENGTH_LONG);
+                    snackbar.setDuration(2000);
+                    snackbar.show();
+                    getActivity().startService(shake);
+                }
+                else{
+                    Snackbar snackbar = Snackbar.make(Objects.requireNonNull(getView()), "Shake to send alerts is DISABLED", BaseTransientBottomBar.LENGTH_LONG);
+                    snackbar.setDuration(2000);
+                    snackbar.show();
+                    getActivity().stopService(shake);
+                }
+            }
+        });
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -193,7 +215,9 @@ public class HomeScreenFragment extends Fragment {
             }
         }
     }
+    public static void stop(){
 
+    }
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void startRecording() {
         try {
