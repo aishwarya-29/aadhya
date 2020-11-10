@@ -3,6 +3,7 @@ package com.example.aadhya;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,15 +75,19 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyChatHolder> 
                     DrawableCompat.setTint(lk.getDrawable(), ContextCompat.getColor(context, R.color.white));
                     Liked.remove(Integer.valueOf(position));
                     likeCount.set(position, Math.max(0, likeCount.get(position) - 1));
+                    Log.i("hey", String.valueOf(likeCount));
+                    ChatFragment.setLikes();
                     likes.setText(likeCount.get(position).toString());
 
                 } else {
                     Liked.add(Integer.valueOf(position));
                     likeCount.set(position, likeCount.get(position) + 1);
+                    Log.i("hey", String.valueOf(likeCount));
+                    ChatFragment.setLikes();
                     DrawableCompat.setTint(lk.getDrawable(), ContextCompat.getColor(context, R.color.pink));
                     likes.setText(likeCount.get(position).toString());
                 }
-                ChatFragment.setLikes();
+
                 String currentUserId;
                 FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                 assert currentUser != null;
