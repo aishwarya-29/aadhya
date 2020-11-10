@@ -64,7 +64,6 @@ public class HomeScreenFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_home_screen, container, false);
         currentUserEmail = currentUser.getEmail();
-<<<<<<< HEAD
         if(ActivityCompat.checkSelfPermission(getContext(),Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getContext(),Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getContext(),Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 0);
         } else {
@@ -74,12 +73,6 @@ public class HomeScreenFragment extends Fragment {
                 getActivity().startService(new Intent(getActivity(),LocationMonitor.class));
             }
         }
-||||||| 5fe7a7b
-        getActivity().startService(new Intent(getActivity(),LocationMonitor.class));
-=======
-        Contacts.setContacts();
-        getActivity().startService(new Intent(getActivity(),LocationMonitor.class));
->>>>>>> 2ee481c8571f551ba3144e4d8fe5f267dcebd27e
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child("User").orderByChild("uemail").equalTo(currentUserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
