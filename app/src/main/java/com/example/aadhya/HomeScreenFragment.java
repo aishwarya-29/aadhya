@@ -44,15 +44,15 @@ import java.util.Objects;
 
 public class HomeScreenFragment extends Fragment {
     Button help, stopRecording, help2;
-    String pin = "3333";
+    public static String pin = "3333";
     MediaRecorder mediaRecorder;
     File audioFile = null;
     AnimatorSet mAnimationSet;
     ObjectAnimator fadeOut, fadeIn;
-    boolean SOSMode = false;
+    static boolean SOSMode = false;
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     String currentUserEmail;
-    String userID;
+    public  static String userID;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +60,7 @@ public class HomeScreenFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_home_screen, container, false);
         currentUserEmail = currentUser.getEmail();
+        Contacts.setContacts();
         getActivity().startService(new Intent(getActivity(),LocationMonitor.class));
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child("User").orderByChild("uemail").equalTo(currentUserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -189,7 +190,9 @@ public class HomeScreenFragment extends Fragment {
             }
         }
     }
+   public static void stop(){
 
+   }
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void startRecording() {
         try {

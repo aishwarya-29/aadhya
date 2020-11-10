@@ -50,15 +50,15 @@ import static android.app.Activity.RESULT_OK;
 public class Contacts extends Fragment {
     RecyclerView rc;
     private ListView lv;
-    ContactsAdapter ca;
-    ArrayList<String> contactNames = new ArrayList<>();
+    static ContactsAdapter ca;
+    static ArrayList<String> contactNames = new ArrayList<>();
     public static ArrayList<String> contactno = new ArrayList<>();
-    ArrayList<Integer> imageid = new ArrayList<>();
+    static ArrayList<Integer> imageid = new ArrayList<>();
     View v;
     FloatingActionButton b;
     public Drawable icon;
-    String currentUserId;
-    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    static String currentUserId;
+    static FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
     public void onDataChange() {
         currentUserId = currentUser.getUid();
@@ -80,19 +80,7 @@ public class Contacts extends Fragment {
             }
         });
     }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        v = inflater.inflate(R.layout.fragment_contacts, container, false);
-        rc = v.findViewById(R.id.list);
-        ca = new ContactsAdapter(getContext(), contactNames, contactno, imageid);
-        rc.setAdapter(ca);
-        rc.setLayoutManager(new LinearLayoutManager(getContext()));
-        new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(rc);
-
+    public static void setContacts(){
         currentUserId = currentUser.getUid();
         Query query = FirebaseDatabase.getInstance().getReference().child("User").child(currentUserId);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -104,7 +92,6 @@ public class Contacts extends Fragment {
                             contactno.add(item.getKey());
                             contactNames.add((String) item.getValue());
                             imageid.add(R.drawable.user);
-                            ca.notifyDataSetChanged();
                         }
 
                     }
@@ -117,7 +104,19 @@ public class Contacts extends Fragment {
 
             }
         });
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        v = inflater.inflate(R.layout.fragment_contacts, container, false);
+        rc = v.findViewById(R.id.list);
+        ca = new ContactsAdapter(getContext(), contactNames, contactno, imageid);
+        rc.setAdapter(ca);
+        rc.setLayoutManager(new LinearLayoutManager(getContext()));
+        new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(rc);
 
         b = v.findViewById(R.id.contactBtn);
         b.setOnClickListener(new View.OnClickListener() {
