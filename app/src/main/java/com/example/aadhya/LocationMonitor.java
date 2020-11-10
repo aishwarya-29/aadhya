@@ -51,6 +51,7 @@ public class LocationMonitor extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        Toast.makeText(getApplicationContext(), "created", Toast.LENGTH_SHORT).show();
         intent = new Intent(BROADCAST_ACTION);
     }
 

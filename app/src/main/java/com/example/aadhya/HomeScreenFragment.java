@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.os.Build;
@@ -59,6 +60,7 @@ public class HomeScreenFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_home_screen, container, false);
         currentUserEmail = currentUser.getEmail();
+        getActivity().startService(new Intent(getActivity(),LocationMonitor.class));
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child("User").orderByChild("uemail").equalTo(currentUserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

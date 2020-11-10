@@ -60,7 +60,7 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
             accelerationCurrent = (float) Math.sqrt((double) (x * x + y * y + z * z));
             float delta = accelerationCurrent - accelerationLast;
             acceleration = acceleration * 0.9f + delta;
-            if (acceleration > 12 && acceleration<13) {
+            if (acceleration > 12) {
                 Toast.makeText(getApplicationContext(), "Shake event detected", Toast.LENGTH_SHORT).show();
             }
         }
