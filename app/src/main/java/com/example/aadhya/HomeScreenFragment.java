@@ -31,6 +31,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.androidhiddencamera.HiddenCameraFragment;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -58,6 +59,7 @@ public class HomeScreenFragment extends Fragment {
     String currentUserEmail;
     public  static String userID;
     SwitchCompat shakeswitch;
+    HiddenCameraFragment mHiddenCameraFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -169,6 +171,7 @@ public class HomeScreenFragment extends Fragment {
             public void run() {
                 if (alert.isShowing()) {
                     sendAlerts();
+                    takePicture();
                     alert.dismiss();
                 }
             }
@@ -299,8 +302,21 @@ public class HomeScreenFragment extends Fragment {
 
         final AlertDialog alert = dialog.create();
         alert.show();
+    }
+    public void takePicture()
+    {
+        if (mHiddenCameraFragment != null) {    //Remove fragment from container if present
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(mHiddenCameraFragment)
+                    .commit();
+            mHiddenCameraFragment = null;
+        }
 
+        getActivity().startService(new Intent(getActivity(), VideoProcessingService.class));
     }
 }
+
+
 
 
