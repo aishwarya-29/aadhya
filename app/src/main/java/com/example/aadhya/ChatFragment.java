@@ -28,7 +28,7 @@ import java.util.Map;
 
 
 public class ChatFragment extends Fragment implements ChatAdapter.OnChatListener {
-//    static Map<String, ArrayList<String>> replies = new HashMap<String, ArrayList<String>>() {
+    //    static Map<String, ArrayList<String>> replies = new HashMap<String, ArrayList<String>>() {
 //        {
 //            put("Some Comment", new ArrayList<String>() {{
 //                add("I totally agree");
@@ -59,6 +59,7 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnChatListener
             }
         });
     }
+
     public static void setLikes() {
         Query q = FirebaseDatabase.getInstance().getReference().child("Posts");
         q.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -77,18 +78,18 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnChatListener
     }
 
     RecyclerView rc;
+    Boolean open=false;
     public static RecyclerView.Adapter ca;
     ImageView lk;
     public static ArrayList<Integer> likeCount = new ArrayList<Integer>();
-//    {{
+    //    {{
 //        add(1);
 //        add(0);
 //        add(0);
 //    }};
     ArrayList<Integer> liked = new ArrayList<>();
 
-    public  static ArrayList<Integer> bgImages = new ArrayList<Integer>()
-    {{
+    public static ArrayList<Integer> bgImages = new ArrayList<Integer>() {{
         add(R.drawable.defense);
         add(R.drawable.abuse);
         add(R.drawable.safety);
@@ -130,29 +131,33 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnChatListener
 
             }
         });
-        Query query1 = FirebaseDatabase.getInstance().getReference().child("Posts");
-        query1.addListenerForSingleValueEvent(new ValueEventListener() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    for (DataSnapshot item : snapshot.child("Like Count").getChildren()) {
-                        likeCount.add(Math.toIntExact((Long) item.getValue()));
-                        ca.notifyDataSetChanged();
+        if(!open){
+            Query query1 = FirebaseDatabase.getInstance().getReference().child("Posts");
+            query1.addListenerForSingleValueEvent(new ValueEventListener() {
+                @RequiresApi(api = Build.VERSION_CODES.N)
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        for (DataSnapshot item : snapshot.child("Like Count").getChildren()) {
+                            likeCount.add(Math.toIntExact((Long) item.getValue()));
+                            ca.notifyDataSetChanged();
+                        }
+                        for (DataSnapshot item : snapshot.child("Comments").getChildren()) {
+                            comments.put(item.getKey(), (Map<String, ArrayList<String>>) item.getValue());
+                            ca.notifyDataSetChanged();
+                        }
+                        open=true;
+
                     }
-                    for (DataSnapshot item : snapshot.child("Comments").getChildren()) {
-                        comments.put(item.getKey(), (Map<String, ArrayList<String>>) item.getValue());
-                        ca.notifyDataSetChanged();
-                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
                 }
-            }
+            });
+        }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
         return v;
     }

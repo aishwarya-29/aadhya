@@ -1,0 +1,17 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#000" />
+            <size
+                android:width="48dp"
+                android:height="48dp" />
+
+        </shape>
+    </item>
+    <item
+        android:bottom="12dp"
+        android:drawable="@drawable/ic_baseline_notifications_active_24"
+        android:left="12dp"
+        android:right="12dp"
+        android:top="12dp" />
+</layer-list>
