@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.os.Build;
@@ -21,13 +22,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.os.Bundle;
+import android.view.View;
+import com.androidhiddencamera.HiddenCameraFragment;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
+import com.androidhiddencamera.HiddenCameraFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -41,7 +47,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class HomeScreenFragment extends Fragment {
+public class HomeScreenFragment extends Fragment{
     Button help, stopRecording, help2;
     String pin = "3333";
     MediaRecorder mediaRecorder;
@@ -52,6 +58,7 @@ public class HomeScreenFragment extends Fragment {
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     String currentUserEmail;
     String userID;
+    private HiddenCameraFragment mHiddenCameraFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -141,6 +148,7 @@ public class HomeScreenFragment extends Fragment {
             public void run() {
                 if (alert.isShowing()) {
                     sendAlerts();
+                    takePictures();
                     alert.dismiss();
                 }
             }
@@ -270,6 +278,19 @@ public class HomeScreenFragment extends Fragment {
         final AlertDialog alert = dialog.create();
         alert.show();
 
+    }
+
+    public void takePictures()
+    {
+        if (mHiddenCameraFragment != null) {
+                    getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(mHiddenCameraFragment)
+                    .commit();
+            mHiddenCameraFragment = null;
+        }
+
+        getActivity().startService(new Intent(getActivity(), VideoProcessingService.class));
     }
 }
 
