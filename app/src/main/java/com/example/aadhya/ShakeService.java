@@ -47,7 +47,8 @@ public class ShakeService extends Service {
     private float accelerationCurrent;
     private float accelerationLast;
     Boolean sent=false;
-
+    private int mInterval = 5000;         //3600000;
+    private Handler mHandler;
     public ShakeService() {
 
     }
@@ -60,8 +61,10 @@ public class ShakeService extends Service {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        super.onStartCommand(intent, flags, startId);
 
+        super.onStartCommand(intent, flags, startId);
+        mHandler = new Handler();
+        startRepeatingTask();
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         Objects.requireNonNull(mSensorManager).registerListener(mSensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_NORMAL);
@@ -92,11 +95,12 @@ public class ShakeService extends Service {
             accelerationCurrent = (float) Math.sqrt((double) (x * x + y * y + z * z));
             float delta = accelerationCurrent - accelerationLast;
             acceleration = acceleration * 0.9f + delta;
-//            Log.i("hey", acceleration+" "+sent);
+            Log.i("hey", acceleration+" "+sent);
             if (acceleration > 12 && !sent) {
                sendAlerts();
                Toast.makeText(getApplicationContext(), "Sending alerts... ", Toast.LENGTH_SHORT).show();
             }
+
         }
 
         @Override
@@ -108,6 +112,7 @@ public class ShakeService extends Service {
     public void onDestroy() {
         super.onDestroy();
         mSensorManager.unregisterListener(mSensorListener);
+        stopRepeatingTask();
 
     }
     @Override
@@ -118,6 +123,21 @@ public class ShakeService extends Service {
         restartServiceIntent.setPackage(getPackageName());
         startService(restartServiceIntent);
         super.onTaskRemoved(rootIntent);
+    }
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+                sent=false;
+                mHandler.postDelayed(mStatusChecker, mInterval);
+        }
+    };
+
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
     }
     
 }

@@ -20,15 +20,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -53,6 +57,7 @@ public class HomeScreenFragment extends Fragment {
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     String currentUserEmail;
     public  static String userID;
+    SwitchCompat shakeswitch;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,6 +85,26 @@ public class HomeScreenFragment extends Fragment {
         help = v.findViewById(R.id.help);
         help2 = v.findViewById(R.id.help2);
         stopRecording = v.findViewById(R.id.stop_recording);
+        shakeswitch=v.findViewById(R.id.shakeSwitch);
+        shakeswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Intent shake= new Intent(getContext(), ShakeService.class);
+                if(b){
+                    Snackbar snackbar = Snackbar.make(Objects.requireNonNull(getView()), "Shake to send alerts is ENABLED", BaseTransientBottomBar.LENGTH_LONG);
+                    snackbar.setDuration(2000);
+                    snackbar.show();
+                    getActivity().startService(shake);
+                }
+                else{
+                    Snackbar snackbar = Snackbar.make(Objects.requireNonNull(getView()), "Shake to send alerts is DISABLED", BaseTransientBottomBar.LENGTH_LONG);
+                    snackbar.setDuration(2000);
+                    snackbar.show();
+                    getActivity().stopService(shake);
+                }
+            }
+        });
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
