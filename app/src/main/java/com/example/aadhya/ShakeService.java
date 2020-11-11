@@ -47,7 +47,7 @@ public class ShakeService extends Service {
     private float accelerationCurrent;
     private float accelerationLast;
     Boolean sent=false;
-    private int mInterval = 5000;         //3600000;
+    private int mInterval = 3600000;
     private Handler mHandler;
     public ShakeService() {
 
@@ -95,7 +95,7 @@ public class ShakeService extends Service {
             accelerationCurrent = (float) Math.sqrt((double) (x * x + y * y + z * z));
             float delta = accelerationCurrent - accelerationLast;
             acceleration = acceleration * 0.9f + delta;
-            Log.i("hey", acceleration+" "+sent);
+//            Log.i("hey", acceleration+" "+sent);
             if (acceleration > 12 && !sent) {
                sendAlerts();
                Toast.makeText(getApplicationContext(), "Sending alerts... ", Toast.LENGTH_SHORT).show();
