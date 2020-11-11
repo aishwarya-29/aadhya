@@ -22,15 +22,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.androidhiddencamera.HiddenCameraFragment;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -43,6 +48,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static androidx.core.content.ContextCompat.getSystemService;
 
@@ -57,6 +64,10 @@ public class HomeScreenFragment extends Fragment {
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     String currentUserEmail;
     public  static String userID;
+    SwitchCompat shakeswitch;
+    HiddenCameraFragment mHiddenCameraFragment;
+    Timer mTmr;
+    TimerTask mTsk;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -91,6 +102,26 @@ public class HomeScreenFragment extends Fragment {
         help = v.findViewById(R.id.help);
         help2 = v.findViewById(R.id.help2);
         stopRecording = v.findViewById(R.id.stop_recording);
+        shakeswitch=v.findViewById(R.id.shakeSwitch);
+        shakeswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Intent shake= new Intent(getContext(), ShakeService.class);
+                if(b){
+                    Snackbar snackbar = Snackbar.make(Objects.requireNonNull(getView()), "Shake to send alerts is ENABLED", BaseTransientBottomBar.LENGTH_LONG);
+                    snackbar.setDuration(2000);
+                    snackbar.show();
+                    getActivity().startService(shake);
+                }
+                else{
+                    Snackbar snackbar = Snackbar.make(Objects.requireNonNull(getView()), "Shake to send alerts is DISABLED", BaseTransientBottomBar.LENGTH_LONG);
+                    snackbar.setDuration(2000);
+                    snackbar.show();
+                    getActivity().stopService(shake);
+                }
+            }
+        });
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -175,7 +206,15 @@ public class HomeScreenFragment extends Fragment {
         SOSMode = true;
         Toast.makeText(getContext(), "Sending alerts to all your contacts. Contact 911 for immediate assistance.", Toast.LENGTH_LONG).show();
         sendSMS();
-
+        takePicture();
+        mTmr = new Timer();
+        mTsk = new TimerTask() {
+            @Override
+            public void run() {
+                takePicture();
+            }
+        };
+        mTmr.schedule(mTsk, 600000);
         if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.RECORD_AUDIO}, 0);
 
@@ -201,9 +240,9 @@ public class HomeScreenFragment extends Fragment {
             }
         }
     }
-   public static void stop(){
+    public static void stop(){
 
-   }
+    }
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void startRecording() {
         try {
@@ -271,7 +310,6 @@ public class HomeScreenFragment extends Fragment {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
         dialog.setTitle("False Alarm?");
         dialog.setMessage("Enter your secret PIN to cancel alert");
-
         final EditText input = new EditText(getContext());
         input.setWidth(50);
 
@@ -286,6 +324,7 @@ public class HomeScreenFragment extends Fragment {
                     mediaRecorder.stop();
                     stopRecording.setVisibility(View.INVISIBLE);
                     mediaRecorder.release();
+                    mTmr.cancel();
                     Toast.makeText(getContext(), "stopped", Toast.LENGTH_SHORT).show();
                     help2.setVisibility(View.INVISIBLE);
                     mAnimationSet.end();
@@ -298,8 +337,16 @@ public class HomeScreenFragment extends Fragment {
 
         final AlertDialog alert = dialog.create();
         alert.show();
-
+    }
+    public void takePicture()
+    {
+        if (mHiddenCameraFragment != null) {    //Remove fragment from container if present
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(mHiddenCameraFragment)
+                    .commit();
+            mHiddenCameraFragment = null;
+        }
+        getActivity().startService(new Intent(getActivity(), VideoProcessingService.class));
     }
 }
-
-

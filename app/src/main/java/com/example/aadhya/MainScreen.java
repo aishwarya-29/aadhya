@@ -35,8 +35,7 @@ public class MainScreen extends AppCompatActivity implements BottomNavigationVie
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Intent shake= new Intent(this, ShakeService.class);
-        startService(shake);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_screen);
         bnav = findViewById(R.id.bottomNavigation);
