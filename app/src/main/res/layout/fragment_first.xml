@@ -4,6 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/frag_contacts"
     tools:context=".FirstFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,13 +13,15 @@
 
         <TextView
             android:id="@+id/textView6"
-            android:layout_width="193dp"
-            android:layout_height="62dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="80dp"
             android:fontFamily="@font/montserrat_bold"
+            android:gravity="center_horizontal"
             android:padding="10dp"
             android:text="CONTACTS"
-            android:textColor="#ffff"
+            android:textAlignment="center"
+            android:textColor="#FFECCC"
             android:textSize="30dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.502"
@@ -27,16 +30,16 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list"
-            android:layout_width="349dp"
-            android:layout_height="435dp"
+            android:layout_width="381dp"
+            android:layout_height="446dp"
             android:layout_marginTop="100dp"
             android:scrollbars="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.506"
+            app:layout_constraintHorizontal_bias="0.39"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.449" />
+            app:layout_constraintVertical_bias="0.352" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/contactBtn"

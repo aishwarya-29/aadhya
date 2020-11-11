@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,7 +16,7 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class SecondFragment extends Fragment {
-
+//    EditText edn,edp,ede;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -58,7 +60,21 @@ public class SecondFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+//         Inflate the layout for this fragment
+//        edn.findViewById(R.id.editname);
+//        edp.findViewById(R.id.editphone);
+//        ede.findViewById(R.id.editemail);
+//        edn.setEnabled(true);
+//        edp.setEnabled(true);
+//        ede.setEnabled(true);
         return inflater.inflate(R.layout.fragment_second, container, false);
     }
+//    public void editAbout(LayoutInflater inflater, ViewGroup container,
+//                     Bundle savedInstanceState)
+//    {
+//        edn.setEnabled(false);
+//        edp.setEnabled(false);
+//        ede.setEnabled(false);
+//    }
+
 }

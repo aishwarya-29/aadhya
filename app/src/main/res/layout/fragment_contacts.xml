@@ -18,7 +18,7 @@
             android:layout_width="411dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="7dp"
-            android:background="#FFFFFF"
+            android:background="#FFECCC"
             app:layout_constraintBottom_toTopOf="@+id/frame"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -28,7 +28,6 @@
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#FFFFFF"
                 android:text="Contacts" />
 
             <com.google.android.material.tabs.TabItem
