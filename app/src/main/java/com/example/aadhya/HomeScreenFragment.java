@@ -46,6 +46,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class HomeScreenFragment extends Fragment {
     Button help, stopRecording, help2;
@@ -60,6 +62,8 @@ public class HomeScreenFragment extends Fragment {
     public  static String userID;
     SwitchCompat shakeswitch;
     HiddenCameraFragment mHiddenCameraFragment;
+    Timer mTmr;
+    TimerTask mTsk;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -171,7 +175,6 @@ public class HomeScreenFragment extends Fragment {
             public void run() {
                 if (alert.isShowing()) {
                     sendAlerts();
-                    takePicture();
                     alert.dismiss();
                 }
             }
@@ -192,7 +195,15 @@ public class HomeScreenFragment extends Fragment {
         SOSMode = true;
         Toast.makeText(getContext(), "Sending alerts to all your contacts. Contact 911 for immediate assistance.", Toast.LENGTH_LONG).show();
         sendSMS();
-
+        takePicture();
+        mTmr = new Timer();
+        mTsk = new TimerTask() {
+            @Override
+            public void run() {
+                takePicture();
+            }
+        };
+        mTmr.schedule(mTsk, 600000);
         if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.RECORD_AUDIO}, 0);
 
@@ -275,7 +286,6 @@ public class HomeScreenFragment extends Fragment {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
         dialog.setTitle("False Alarm?");
         dialog.setMessage("Enter your secret PIN to cancel alert");
-
         final EditText input = new EditText(getContext());
         input.setWidth(50);
 
@@ -290,6 +300,7 @@ public class HomeScreenFragment extends Fragment {
                     mediaRecorder.stop();
                     stopRecording.setVisibility(View.INVISIBLE);
                     mediaRecorder.release();
+                    mTmr.cancel();
                     Toast.makeText(getContext(), "stopped", Toast.LENGTH_SHORT).show();
                     help2.setVisibility(View.INVISIBLE);
                     mAnimationSet.end();
@@ -312,11 +323,6 @@ public class HomeScreenFragment extends Fragment {
                     .commit();
             mHiddenCameraFragment = null;
         }
-
         getActivity().startService(new Intent(getActivity(), VideoProcessingService.class));
     }
 }
-
-
-
-

