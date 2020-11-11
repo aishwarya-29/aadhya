@@ -76,7 +76,7 @@ public class ShakeService extends Service {
 
     private void sendAlerts(){
 
-        ArrayList<String> contactno = Contacts.contactno;
+        ArrayList<String> contactno = FirstFragment.contactno;
         SmsManager sms = SmsManager.getDefault();
         String message = "SOS. I'm in trouble. Follow the link to view my location. http://www.aadhya.com/track/" + HomeScreenFragment.userID;
         for (String no : contactno) {

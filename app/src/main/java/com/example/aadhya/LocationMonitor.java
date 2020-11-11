@@ -56,18 +56,18 @@ public class LocationMonitor extends Service {
     }
 
     @Override
-    public void onStart(Intent intent, int startId) {
-        super.onStart(intent, startId);
+    public int onStartCommand(Intent intent, int flags, int startId) {
         currentUserEmail = currentUser.getEmail();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         listener = new MyLocationListener();
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
+
+            return START_STICKY;
         }
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 14000, 0, (LocationListener) listener);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 14000, 0, listener);
+        return START_STICKY;
     }
-
     public LocationMonitor() {
     }
 
@@ -119,7 +119,6 @@ public class LocationMonitor extends Service {
         }
         return provider1.equals(provider2);
     }
-
 
     @Override
     public void onDestroy() {

@@ -5,6 +5,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -46,6 +48,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static androidx.core.content.ContextCompat.getSystemService;
 
 public class HomeScreenFragment extends Fragment {
     Button help, stopRecording, help2;
@@ -60,6 +66,8 @@ public class HomeScreenFragment extends Fragment {
     public  static String userID;
     SwitchCompat shakeswitch;
     HiddenCameraFragment mHiddenCameraFragment;
+    Timer mTmr;
+    TimerTask mTsk;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,8 +75,15 @@ public class HomeScreenFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_home_screen, container, false);
         currentUserEmail = currentUser.getEmail();
-        Contacts.setContacts();
-        getActivity().startService(new Intent(getActivity(),LocationMonitor.class));
+        if(ActivityCompat.checkSelfPermission(getContext(),Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getContext(),Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getContext(),Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getContext(),Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.SEND_SMS}, 0);
+        } else {
+            if(isMyServiceRunning(LocationMonitor.class, getContext())) {
+
+            } else {
+                getActivity().startService(new Intent(getActivity(),LocationMonitor.class));
+            }
+        }
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child("User").orderByChild("uemail").equalTo(currentUserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -171,7 +186,6 @@ public class HomeScreenFragment extends Fragment {
             public void run() {
                 if (alert.isShowing()) {
                     sendAlerts();
-                    takePicture();
                     alert.dismiss();
                 }
             }
@@ -192,7 +206,15 @@ public class HomeScreenFragment extends Fragment {
         SOSMode = true;
         Toast.makeText(getContext(), "Sending alerts to all your contacts. Contact 911 for immediate assistance.", Toast.LENGTH_LONG).show();
         sendSMS();
-
+        takePicture();
+        mTmr = new Timer();
+        mTsk = new TimerTask() {
+            @Override
+            public void run() {
+                takePicture();
+            }
+        };
+        mTmr.schedule(mTsk, 600000);
         if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.RECORD_AUDIO}, 0);
 
@@ -210,7 +232,7 @@ public class HomeScreenFragment extends Fragment {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.SEND_SMS}, 0);
         } else {
-            ArrayList<String> contactno = Contacts.contactno;
+            ArrayList<String> contactno = FirstFragment.contactno;
             SmsManager sms = SmsManager.getDefault();
             String message = "SOS. I'm in trouble. Follow the link to view my location. http://www.aadhya.com/track/" + userID;
             for (String no : contactno) {
@@ -271,11 +293,23 @@ public class HomeScreenFragment extends Fragment {
         mAnimationSet.start();
     }
 
+    private boolean isMyServiceRunning(Class<?> serviceClass,Context context) {
+        ActivityManager manager = (ActivityManager)context. getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.i("Service already","running");
+                return true;
+            }
+        }
+        Log.i("Service not","running");
+        return false;
+    }
+
+
     private void stopAlerts() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
         dialog.setTitle("False Alarm?");
         dialog.setMessage("Enter your secret PIN to cancel alert");
-
         final EditText input = new EditText(getContext());
         input.setWidth(50);
 
@@ -290,6 +324,7 @@ public class HomeScreenFragment extends Fragment {
                     mediaRecorder.stop();
                     stopRecording.setVisibility(View.INVISIBLE);
                     mediaRecorder.release();
+                    mTmr.cancel();
                     Toast.makeText(getContext(), "stopped", Toast.LENGTH_SHORT).show();
                     help2.setVisibility(View.INVISIBLE);
                     mAnimationSet.end();
@@ -312,11 +347,6 @@ public class HomeScreenFragment extends Fragment {
                     .commit();
             mHiddenCameraFragment = null;
         }
-
         getActivity().startService(new Intent(getActivity(), VideoProcessingService.class));
     }
 }
-
-
-
-
