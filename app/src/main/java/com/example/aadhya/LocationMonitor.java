@@ -51,7 +51,6 @@ public class LocationMonitor extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Toast.makeText(getApplicationContext(), "created", Toast.LENGTH_SHORT).show();
         intent = new Intent(BROADCAST_ACTION);
     }
 
@@ -123,7 +122,6 @@ public class LocationMonitor extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Toast.makeText(getApplicationContext(), "Stopped", Toast.LENGTH_SHORT).show();
     }
 
     public static Thread performOnBackgroundThread(final Runnable runnable) {
