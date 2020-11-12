@@ -92,6 +92,7 @@ public class FirstFragment extends Fragment {
                             contactno.add(item.getKey());
                             contactNames.add((String) item.getValue());
                             imageid.add(R.drawable.user);
+                            ca.notifyDataSetChanged();
                         }
 
                     }
@@ -113,11 +114,12 @@ public class FirstFragment extends Fragment {
 
         v = inflater.inflate(R.layout.fragment_first, container, false);
         rc = v.findViewById(R.id.list);
+
         ca = new ContactsAdapter(getContext(), contactNames, contactno, imageid);
         rc.setAdapter(ca);
         rc.setLayoutManager(new LinearLayoutManager(getContext()));
         new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(rc);
-
+        setContacts();
         b = v.findViewById(R.id.contactBtn);
         b.setOnClickListener(new View.OnClickListener() {
             @Override

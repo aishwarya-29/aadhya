@@ -9,6 +9,7 @@ import android.annotation.*;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import android.util.Log;
 import android.widget.Toast;
 
 import com.androidhiddencamera.CameraConfig;

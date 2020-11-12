@@ -1,43 +1,21 @@
 package com.example.aadhya;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.telephony.SmsManager;
-import android.text.InputType;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -46,9 +24,10 @@ public class ShakeService extends Service {
     private float acceleration;
     private float accelerationCurrent;
     private float accelerationLast;
-    Boolean sent=false;
+    Boolean sent = false;
     private int mInterval = 3600000;
     private Handler mHandler;
+
     public ShakeService() {
 
     }
@@ -74,7 +53,7 @@ public class ShakeService extends Service {
         return START_STICKY;
     }
 
-    private void sendAlerts(){
+    private void sendAlerts() {
 
         ArrayList<String> contactno = FirstFragment.contactno;
         SmsManager sms = SmsManager.getDefault();
@@ -82,8 +61,9 @@ public class ShakeService extends Service {
         for (String no : contactno) {
             sms.sendTextMessage(no, null, message, null, null);
         }
-        sent=true;
+        sent = true;
     }
+
     private final SensorEventListener mSensorListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
@@ -97,8 +77,8 @@ public class ShakeService extends Service {
             acceleration = acceleration * 0.9f + delta;
 //            Log.i("hey", acceleration+" "+sent);
             if (acceleration > 12 && !sent) {
-               sendAlerts();
-               Toast.makeText(getApplicationContext(), "Sending alerts... ", Toast.LENGTH_SHORT).show();
+                sendAlerts();
+                Toast.makeText(getApplicationContext(), "Sending alerts... ", Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -115,20 +95,22 @@ public class ShakeService extends Service {
         stopRepeatingTask();
 
     }
+
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        Log.i("hey","removed");
-        sent=false;
-        Intent restartServiceIntent = new Intent(getApplicationContext(),this.getClass());
+        Log.i("hey", "removed");
+        sent = false;
+        Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
         restartServiceIntent.setPackage(getPackageName());
         startService(restartServiceIntent);
         super.onTaskRemoved(rootIntent);
     }
+
     Runnable mStatusChecker = new Runnable() {
         @Override
         public void run() {
-                sent=false;
-                mHandler.postDelayed(mStatusChecker, mInterval);
+            sent = false;
+            mHandler.postDelayed(mStatusChecker, mInterval);
         }
     };
 
@@ -139,5 +121,5 @@ public class ShakeService extends Service {
     void stopRepeatingTask() {
         mHandler.removeCallbacks(mStatusChecker);
     }
-    
+
 }

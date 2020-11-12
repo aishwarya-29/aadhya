@@ -56,6 +56,7 @@ import static androidx.core.content.ContextCompat.getSystemService;
 public class HomeScreenFragment extends Fragment {
     Button help, stopRecording, help2;
     public static String pin = "3333";
+    private static boolean open=false;
     MediaRecorder mediaRecorder;
     File audioFile = null;
     AnimatorSet mAnimationSet;
@@ -67,6 +68,7 @@ public class HomeScreenFragment extends Fragment {
     SwitchCompat shakeswitch;
     HiddenCameraFragment mHiddenCameraFragment;
     Timer mTmr;
+
     TimerTask mTsk;
 
     @Override
@@ -103,6 +105,7 @@ public class HomeScreenFragment extends Fragment {
         help2 = v.findViewById(R.id.help2);
         stopRecording = v.findViewById(R.id.stop_recording);
         shakeswitch=v.findViewById(R.id.shakeSwitch);
+        shakeswitch.setChecked(open);
         shakeswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
@@ -112,12 +115,14 @@ public class HomeScreenFragment extends Fragment {
                     Snackbar snackbar = Snackbar.make(Objects.requireNonNull(getView()), "Shake to send alerts is ENABLED", BaseTransientBottomBar.LENGTH_LONG);
                     snackbar.setDuration(2000);
                     snackbar.show();
+                    open=true;
                     getActivity().startService(shake);
                 }
                 else{
                     Snackbar snackbar = Snackbar.make(Objects.requireNonNull(getView()), "Shake to send alerts is DISABLED", BaseTransientBottomBar.LENGTH_LONG);
                     snackbar.setDuration(2000);
                     snackbar.show();
+                    open=false;
                     getActivity().stopService(shake);
                 }
             }
