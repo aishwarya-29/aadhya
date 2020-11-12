@@ -13,13 +13,13 @@ import java.util.ArrayList;
 public class Home extends Fragment {
     public static ArrayList<Integer> userImg = new ArrayList<Integer>() {{
         add(R.drawable.user1);
-        add(R.drawable.user2);
-        add(R.drawable.user3);
         add(R.drawable.user4);
         add(R.drawable.user5);
-        add(R.drawable.user6);
         add(R.drawable.user7);
         add(R.drawable.user8);
+        add(R.drawable.user2);
+        add(R.drawable.user3);
+        add(R.drawable.user6);
         add(R.drawable.user9);
         add(R.drawable.user10);
         add(R.drawable.user11);
