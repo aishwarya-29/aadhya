@@ -78,7 +78,7 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnChatListener
     }
 
     RecyclerView rc;
-    Boolean open=false;
+    Boolean open = false;
     public static RecyclerView.Adapter ca;
     ImageView lk;
     public static ArrayList<Integer> likeCount = new ArrayList<Integer>();
@@ -131,7 +131,7 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnChatListener
 
             }
         });
-        if(!open){
+        if (!open) {
             Query query1 = FirebaseDatabase.getInstance().getReference().child("Posts");
             query1.addListenerForSingleValueEvent(new ValueEventListener() {
                 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -146,7 +146,7 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnChatListener
                             comments.put(item.getKey(), (Map<String, ArrayList<String>>) item.getValue());
                             ca.notifyDataSetChanged();
                         }
-                        open=true;
+                        open = true;
 
                     }
                 }

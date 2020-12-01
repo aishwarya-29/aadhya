@@ -26,7 +26,8 @@ public class SecondFragment extends Fragment {
     View v;
     EditText editName, editEmail, editPhone;
     DatabaseReference databaseReference;
-    String name, phone, currentUserEmail;
+    static String name, phone;
+    String  currentUserEmail;
     FloatingActionButton button;
 
     @Override
@@ -102,6 +103,12 @@ public class SecondFragment extends Fragment {
 
 
         return v;
+    }
+
+    public static void setDetails(String n, String p){
+        name=n;
+        phone=p;
+
     }
 
     private void setDetails() {

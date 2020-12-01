@@ -44,22 +44,25 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.os.Build.VERSION_CODES.M;
-import static androidx.core.content.ContextCompat.getSystemService;
+import static com.example.aadhya.ChatFragment.comments;
+import static com.example.aadhya.SecondFragment.setDetails;
 
 public class HomeScreenFragment extends Fragment {
     Button help, stopRecording, help2;
     public static String pin = "3333";
-    private static boolean open=false;
+    private static boolean open = false;
     MediaRecorder mediaRecorder;
     File audioFile = null;
     AnimatorSet mAnimationSet;
@@ -67,7 +70,7 @@ public class HomeScreenFragment extends Fragment {
     static boolean SOSMode = false;
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     String currentUserEmail;
-    public  static String userID;
+    public static String userID;
     SwitchCompat shakeswitch;
     HiddenCameraFragment mHiddenCameraFragment;
     Timer mTmr;
@@ -81,13 +84,13 @@ public class HomeScreenFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_home_screen, container, false);
         currentUserEmail = currentUser.getEmail();
-        if(ActivityCompat.checkSelfPermission(getContext(),Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getContext(),Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getContext(),Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getContext(),Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.SEND_SMS}, 0);
         } else {
-            if(isMyServiceRunning(LocationMonitor.class, getContext())) {
+            if (isMyServiceRunning(LocationMonitor.class, getContext())) {
 
             } else {
-                getActivity().startService(new Intent(getActivity(),LocationMonitor.class));
+                getActivity().startService(new Intent(getActivity(), LocationMonitor.class));
             }
         }
 
@@ -105,13 +108,53 @@ public class HomeScreenFragment extends Fragment {
         if (Build.VERSION.SDK_INT >= M) {
             if (!Settings.canDrawOverlays(getContext())) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:com.example.aadhya" ));
+                        Uri.parse("package:com.example.aadhya"));
                 startActivityForResult(intent, 0);
             }
         }
 
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);}
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+        }
+
+        Query query1 = FirebaseDatabase.getInstance().getReference().child("Posts");
+        query1.addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot item : snapshot.child("Like Count").getChildren()) {
+                        ChatFragment.likeCount.add(Math.toIntExact((Long) item.getValue()));
+                    }
+                    for (DataSnapshot item : snapshot.child("Comments").getChildren()) {
+                        comments.put(item.getKey(), (Map<String, ArrayList<String>>) item.getValue());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child("User").orderByChild("uemail").equalTo(currentUserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    String name = ds.child("uname").getValue(String.class);
+                    String phone = ds.child("umobno").getValue(String.class);
+                    setDetails(name, phone);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child("User").orderByChild("uemail").equalTo(currentUserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -130,25 +173,24 @@ public class HomeScreenFragment extends Fragment {
         help = v.findViewById(R.id.help);
         help2 = v.findViewById(R.id.help2);
         stopRecording = v.findViewById(R.id.stop_recording);
-        shakeswitch=v.findViewById(R.id.shakeSwitch);
+        shakeswitch = v.findViewById(R.id.shakeSwitch);
         shakeswitch.setChecked(open);
         shakeswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                Intent shake= new Intent(getContext(), ShakeService.class);
-                if(b){
+                Intent shake = new Intent(getContext(), ShakeService.class);
+                if (b) {
                     Snackbar snackbar = Snackbar.make(Objects.requireNonNull(getView()), "Shake to send alerts is ENABLED", BaseTransientBottomBar.LENGTH_LONG);
                     snackbar.setDuration(2000);
                     snackbar.show();
-                    open=true;
+                    open = true;
                     getActivity().startService(shake);
-                }
-                else{
+                } else {
                     Snackbar snackbar = Snackbar.make(Objects.requireNonNull(getView()), "Shake to send alerts is DISABLED", BaseTransientBottomBar.LENGTH_LONG);
                     snackbar.setDuration(2000);
                     snackbar.show();
-                    open=false;
+                    open = false;
                     getActivity().stopService(shake);
                 }
             }
@@ -271,9 +313,11 @@ public class HomeScreenFragment extends Fragment {
             }
         }
     }
-    public static void stop(){
+
+    public static void stop() {
 
     }
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void startRecording() {
         try {
@@ -324,15 +368,15 @@ public class HomeScreenFragment extends Fragment {
         mAnimationSet.start();
     }
 
-    private boolean isMyServiceRunning(Class<?> serviceClass,Context context) {
-        ActivityManager manager = (ActivityManager)context. getSystemService(Context.ACTIVITY_SERVICE);
+    private boolean isMyServiceRunning(Class<?> serviceClass, Context context) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
-                Log.i("Service already","running");
+                Log.i("Service already", "running");
                 return true;
             }
         }
-        Log.i("Service not","running");
+        Log.i("Service not", "running");
         return false;
     }
 
@@ -369,8 +413,8 @@ public class HomeScreenFragment extends Fragment {
         final AlertDialog alert = dialog.create();
         alert.show();
     }
-    public void takePicture()
-    {
+
+    public void takePicture() {
         if (mHiddenCameraFragment != null) {    //Remove fragment from container if present
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
