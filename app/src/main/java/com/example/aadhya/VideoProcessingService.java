@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.IBinder;
 import android.annotation.*;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -22,6 +24,13 @@ import com.androidhiddencamera.config.CameraImageFormat;
 import com.androidhiddencamera.config.CameraResolution;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.ControllableTask;
@@ -33,6 +42,8 @@ import com.google.firebase.storage.UploadTask;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -42,7 +53,27 @@ import java.util.UUID;
  */
 
 public class VideoProcessingService extends HiddenCameraService {
+    // class variable
+    final String lexicon = "ABCDEFGHIJKLMNOPQRSTUVWXYZ12345674890";
 
+    final java.util.Random rand = new java.util.Random();
+
+    // consider using a Map<String,Boolean> to say whether the identifier is being used or not
+    final Set<String> identifiers = new HashSet<String>();
+
+    public String randomIdentifier() {
+        StringBuilder builder = new StringBuilder();
+        while(builder.toString().length() == 0) {
+            int length = rand.nextInt(5)+5;
+            for(int i = 0; i < length; i++) {
+                builder.append(lexicon.charAt(rand.nextInt(lexicon.length())));
+            }
+            if(identifiers.contains(builder.toString())) {
+                builder = new StringBuilder();
+            }
+        }
+        return builder.toString();
+    }
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -90,15 +121,38 @@ public class VideoProcessingService extends HiddenCameraService {
     }
 
     @Override
-    public void onImageCapture(File imageFile) {
+    public void onImageCapture(final File imageFile) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
         StorageReference picharRef = storageRef.child(imageFile.getName());
         StorageReference picharImagesRef = storageRef.child(imageFile.getAbsolutePath());
         picharRef.getName().equals(picharImagesRef.getName());
         picharRef.getPath().equals(picharImagesRef.getPath());
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        String currentUserEmail = currentUser.getEmail();
+        final String[] userID = new String[1];
+        reference.child("User").orderByChild("uemail").equalTo(currentUserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    userID[0] = ds.child("key").getValue(String.class);
+                    storePicture(userID[0], imageFile);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void storePicture(String userID, File imageFile) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        Log.d(String.valueOf(0), userID+"/");
+        StorageReference pichar1Ref = storageRef.child("data/"+userID+"/"+"images/" + randomIdentifier());
         Uri file = Uri.fromFile(new File(imageFile.getAbsolutePath()));
-        StorageReference pichar1Ref = storageRef.child("images/"+imageFile.getPath());
         UploadTask uploadTask = pichar1Ref.putFile(file);
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
@@ -110,8 +164,7 @@ public class VideoProcessingService extends HiddenCameraService {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
             }
         });
-
-    stopSelf();
+        stopSelf();
     }
 
     @Override
