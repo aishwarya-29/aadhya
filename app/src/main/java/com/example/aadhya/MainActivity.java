@@ -79,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
     {
         Intent click= new Intent(MainActivity.this, signUp.class);
         startActivity(click);
-        finish();
     }
 
 
