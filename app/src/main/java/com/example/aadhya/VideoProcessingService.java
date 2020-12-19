@@ -5,14 +5,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.IBinder;
-import android.annotation.*;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 import com.androidhiddencamera.CameraConfig;
 import com.androidhiddencamera.CameraError;
@@ -32,10 +29,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageTask;
-import com.google.firebase.storage.ControllableTask;
-import com.google.firebase.storage.CancellableTask;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -44,7 +37,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Created by Keval on 11-Nov-16.
@@ -63,17 +55,18 @@ public class VideoProcessingService extends HiddenCameraService {
 
     public String randomIdentifier() {
         StringBuilder builder = new StringBuilder();
-        while(builder.toString().length() == 0) {
-            int length = rand.nextInt(5)+5;
-            for(int i = 0; i < length; i++) {
+        while (builder.toString().length() == 0) {
+            int length = rand.nextInt(5) + 5;
+            for (int i = 0; i < length; i++) {
                 builder.append(lexicon.charAt(rand.nextInt(lexicon.length())));
             }
-            if(identifiers.contains(builder.toString())) {
+            if (identifiers.contains(builder.toString())) {
                 builder = new StringBuilder();
             }
         }
         return builder.toString();
     }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -140,6 +133,7 @@ public class VideoProcessingService extends HiddenCameraService {
                     storePicture(userID[0], imageFile);
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -150,14 +144,14 @@ public class VideoProcessingService extends HiddenCameraService {
     private void storePicture(String userID, File imageFile) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
-        Log.d(String.valueOf(0), userID+"/");
-        StorageReference pichar1Ref = storageRef.child("data/"+userID+"/"+"images/" + randomIdentifier());
+        Log.d(String.valueOf(0), userID + "/");
+        StorageReference pichar1Ref = storageRef.child("data/" + userID + "/" + "images/" + randomIdentifier());
         Uri file = Uri.fromFile(new File(imageFile.getAbsolutePath()));
         UploadTask uploadTask = pichar1Ref.putFile(file);
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(Exception exception) {
-                Toast.makeText(getApplication(),"OopsieDoodle",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication(), "OopsieDoodle", Toast.LENGTH_SHORT).show();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override

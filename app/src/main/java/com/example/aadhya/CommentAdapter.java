@@ -26,7 +26,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyHolder
         context = ct;
         comments = c;
         userDp = Home.userImg;
-        onCommentListener=oc;
+        onCommentListener = oc;
         commentHead = new ArrayList<>(comments.keySet());
     }
 
@@ -42,7 +42,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyHolder
     @Override
     public void onBindViewHolder(@NonNull MyHolder holder, int position) {
         commentHead = new ArrayList<>(comments.keySet());
-        holder.comment.setText(commentHead.get(position).replaceAll("\\^","."));
+        holder.comment.setText(commentHead.get(position).replaceAll("\\^", "."));
         holder.img.setImageResource(userDp.get(position % 35));
     }
 
@@ -55,11 +55,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyHolder
         TextView comment;
         ImageView img;
         OnCommentListener onCommentListener;
+
         public MyHolder(@NonNull View itemView, OnCommentListener onCommentListener) {
             super(itemView);
             img = itemView.findViewById(R.id.commentImg);
             comment = itemView.findViewById(R.id.commentTitle);
-            this.onCommentListener=onCommentListener;
+            this.onCommentListener = onCommentListener;
             itemView.setOnClickListener(this);
         }
 
@@ -68,7 +69,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyHolder
             onCommentListener.OnCommentClick(getAdapterPosition());
         }
     }
-    public interface OnCommentListener{
+
+    public interface OnCommentListener {
         void OnCommentClick(int position);
     }
 }

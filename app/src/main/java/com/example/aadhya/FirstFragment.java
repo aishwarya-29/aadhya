@@ -80,7 +80,8 @@ public class FirstFragment extends Fragment {
             }
         });
     }
-    public static void setContacts(){
+
+    public static void setContacts() {
         currentUserId = currentUser.getUid();
         Query query = FirebaseDatabase.getInstance().getReference().child("User").child(currentUserId);
         query.addListenerForSingleValueEvent(new ValueEventListener() {

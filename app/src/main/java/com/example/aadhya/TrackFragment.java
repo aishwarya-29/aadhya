@@ -4,21 +4,17 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -38,7 +34,8 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
     String userID;
     private DatabaseReference databaseReference;
     private LatLng currentLocation;
-    Double latitude,longitude;
+    Double latitude, longitude;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_track, container, false);
@@ -52,7 +49,7 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
         databaseReference.child("User").orderByChild("key").equalTo(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot ds : snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     latitude = (Double) ds.child("Location").child("Latitude").getValue();
                     longitude = (Double) ds.child("Location").child("Longitude").getValue();
                     setLocation();
@@ -75,9 +72,9 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        currentLocation = new LatLng(latitude,longitude);
+        currentLocation = new LatLng(latitude, longitude);
         mMap.addMarker(new MarkerOptions().position(currentLocation).title("Marker in Sydney"));
         mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLocation));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,14));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 14));
     }
 }

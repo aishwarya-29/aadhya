@@ -17,7 +17,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
-import java.util.Locale;
 
 public class TrackLocation extends AppCompatActivity {
     Uri uri;
@@ -25,6 +24,7 @@ public class TrackLocation extends AppCompatActivity {
     Button openMap;
     DatabaseReference databaseReference;
     Double latitude1, longitude1;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +36,7 @@ public class TrackLocation extends AppCompatActivity {
         databaseReference.child("User").orderByChild("key").equalTo(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot ds : snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     latitude1 = (Double) ds.child("Location").child("Latitude").getValue();
                     longitude1 = (Double) ds.child("Location").child("Longitude").getValue();
                 }

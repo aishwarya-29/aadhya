@@ -25,6 +25,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     String realpassword = "password";
     private FirebaseAuth auth;
     ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +34,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         login = findViewById(R.id.login);
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
-        su= findViewById(R.id.sup);
+        su = findViewById(R.id.sup);
         login.setOnClickListener(this);
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Signing in");
@@ -43,31 +44,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View view) {
         progressDialog.show();
-        if(email.getText().toString().isEmpty() || password.getText().toString().isEmpty()) {
-            Toast.makeText(getApplicationContext(),"Enter all details",Toast.LENGTH_SHORT).show();
-        }
-        else {
+        if (email.getText().toString().isEmpty() || password.getText().toString().isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Enter all details", Toast.LENGTH_SHORT).show();
+        } else {
             String em = email.getText().toString();
             String pattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-            if(!(em.trim().matches(pattern))) {
+            if (!(em.trim().matches(pattern))) {
                 progressDialog.dismiss();
-                Toast.makeText(getApplicationContext(), "Invalid email address", Toast.LENGTH_SHORT).show();;
-            }
-            else {
+                Toast.makeText(getApplicationContext(), "Invalid email address", Toast.LENGTH_SHORT).show();
+                ;
+            } else {
                 final String login_email = email.getText().toString();
                 final String login_password = password.getText().toString();
                 auth.signInWithEmailAndPassword(login_email, login_password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             progressDialog.dismiss();
-                            saveUserInformation(login_email,login_password);
-                            Intent i=new Intent(LoginActivity.this, MainScreen.class);
+                            saveUserInformation(login_email, login_password);
+                            Intent i = new Intent(LoginActivity.this, MainScreen.class);
                             startActivity(i);
                             finish();
                         } else {
                             progressDialog.dismiss();
-                            Toast.makeText(getApplicationContext(),"Login failed!!  " + task.getException().getMessage(),Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Login failed!!  " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -83,15 +83,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         editor.commit();
     }
 
-    public void su(View v)
-    {
-        Intent i = new Intent(LoginActivity.this,signUp.class);
+    public void su(View v) {
+        Intent i = new Intent(LoginActivity.this, signUp.class);
         startActivity(i);
         finish();
     }
-    public void forgotpass(View v)
-    {
-        Intent i = new Intent(LoginActivity.this,ForgotPassword.class);
+
+    public void forgotpass(View v) {
+        Intent i = new Intent(LoginActivity.this, ForgotPassword.class);
         startActivity(i);
         finish();
     }

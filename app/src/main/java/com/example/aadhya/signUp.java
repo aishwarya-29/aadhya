@@ -1,19 +1,15 @@
 package com.example.aadhya;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -25,13 +21,13 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements View.OnClickListener {
     Button btnSubmit;
-    EditText name, pno , email, pin, aadhar, pwd, pwd2;
-    Integer flaga=-1;
-    Integer flagb=-1;
-    Integer flagc=-1;
-    Integer flagd=-1;
-    Integer flage=-1;
-    Boolean readUserInput= false;
+    EditText name, pno, email, pin, aadhar, pwd, pwd2;
+    Integer flaga = -1;
+    Integer flagb = -1;
+    Integer flagc = -1;
+    Integer flagd = -1;
+    Integer flage = -1;
+    Boolean readUserInput = false;
     private FirebaseAuth auth;
     ProgressDialog progressDialog;
 
@@ -75,8 +71,9 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
         if (pno1.length() != 10) {
             progressDialog.dismiss();
             Toast.makeText(this, "Enter the phone number correctly!!", Toast.LENGTH_LONG).show();
-        }else{
-        flagb = 1;}
+        } else {
+            flagb = 1;
+        }
 
         String ad = aadhar.getText().toString();
         if (ad.length() != 12) {
@@ -92,8 +89,7 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
         } else {
             if (email.getText().toString().trim().matches(emailPattern)) {
                 flage = 1;
-            }
-            else {
+            } else {
                 progressDialog.dismiss();
                 Toast.makeText(getApplicationContext(), "Invalid email address", Toast.LENGTH_SHORT).show();
             }
@@ -107,16 +103,16 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
             flagc = 1;
         }
     }
-    public void submit(View v)
-    {
-        String n= name.getText().toString();
-        String e=email.getText().toString();
+
+    public void submit(View v) {
+        String n = name.getText().toString();
+        String e = email.getText().toString();
         String m = pno.getText().toString();
-        String p= pin.getText().toString();
-        String pd =pwd.getText().toString();
+        String p = pin.getText().toString();
+        String pd = pwd.getText().toString();
         String aa = aadhar.getText().toString();
-        final User user1 = new User(n,e,m,p,aa);
-        String userid= n;
+        final User user1 = new User(n, e, m, p, aa);
+        String userid = n;
         DatabaseReference reference;
         reference = FirebaseDatabase.getInstance().getReference();
         DatabaseReference newRef = reference.child("User").push();
@@ -125,15 +121,15 @@ public class signUp<flag1, flag2, flag3> extends AppCompatActivity implements Vi
         StringBuilder sb = new StringBuilder(key);
         sb.deleteCharAt(0);
         newRef.child("key").setValue(sb.toString());
-        auth.createUserWithEmailAndPassword(e,pd);
+        auth.createUserWithEmailAndPassword(e, pd);
         progressDialog.dismiss();
         Intent i = new Intent(signUp.this, MainScreen.class);
         startActivity(i);
-        auth.createUserWithEmailAndPassword(e,pd).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        auth.createUserWithEmailAndPassword(e, pd).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    FirebaseUser user=auth.getCurrentUser();
+                if (task.isSuccessful()) {
+                    FirebaseUser user = auth.getCurrentUser();
                     assert user != null;
                     String uid = user.getUid();
                     DatabaseReference reference;

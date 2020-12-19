@@ -20,6 +20,7 @@ public class Replies extends AppCompatActivity {
     ImageView img;
     Button b1;
     EditText ed1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +28,7 @@ public class Replies extends AppCompatActivity {
         if (getIntent().hasExtra("Position")) {
             final int position = (int) getIntent().getExtras().get("Position");
             final int Postpos = (int) getIntent().getExtras().get("Post position");
-            Log.i("hey", String.valueOf(position)+" "+Postpos);
+            Log.i("hey", String.valueOf(position) + " " + Postpos);
             final ArrayList<String> chatTitles = new ArrayList<>(ChatFragment.comments.keySet());
             final String post = chatTitles.get(Postpos);
             ArrayList<String> comment = new ArrayList<>(ChatFragment.comments.get(post).keySet());
@@ -36,16 +37,16 @@ public class Replies extends AppCompatActivity {
             l1 = findViewById(R.id.replies);
             img = findViewById(R.id.commentImg);
             tv1 = findViewById(R.id.commentHead);
-            b1=findViewById(R.id.addReply);
+            b1 = findViewById(R.id.addReply);
             img.setImageResource(Home.userImg.get(position % 35));
-            ed1=findViewById(R.id.postReply);
-            tv1.setText(title.replaceAll("\\^","."));
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.reply_row, R.id.replyRow, replies);
+            ed1 = findViewById(R.id.postReply);
+            tv1.setText(title.replaceAll("\\^", "."));
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.reply_row, R.id.replyRow, replies);
             l1.setAdapter(adapter);
             b1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!String.valueOf(ed1.getText()).equals("")){
+                    if (!String.valueOf(ed1.getText()).equals("")) {
                         ChatFragment.comments.get(post).get(title).add(String.valueOf(ed1.getText()));
                         Chat.ca.notifyDataSetChanged();
                         ChatFragment.SetComments();

@@ -8,22 +8,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -31,9 +22,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class LocationMonitor extends Service {
     public static final String BROADCAST_ACTION = "Hello World";
@@ -67,10 +55,11 @@ public class LocationMonitor extends Service {
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 14000, 0, listener);
         return START_STICKY;
     }
+
     public LocationMonitor() {
     }
 
-    protected boolean isBetterLocation(Location location, Location currentBestLocation){
+    protected boolean isBetterLocation(Location location, Location currentBestLocation) {
         if (currentBestLocation == null) {
             // A new location is always better than no location
             return true;
@@ -141,7 +130,7 @@ public class LocationMonitor extends Service {
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        Intent restartServiceIntent = new Intent(getApplicationContext(),this.getClass());
+        Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
         restartServiceIntent.setPackage(getPackageName());
         startService(restartServiceIntent);
         super.onTaskRemoved(rootIntent);
@@ -149,24 +138,24 @@ public class LocationMonitor extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return  null;
+        return null;
     }
 
-    public class MyLocationListener implements  LocationListener {
+    public class MyLocationListener implements LocationListener {
 
         @Override
         public void onLocationChanged(@NonNull final Location location) {
             Log.i("*****", "Location changed");
-            if(isBetterLocation(location, previousBestLocation)) {
+            if (isBetterLocation(location, previousBestLocation)) {
                 location.getLatitude();
                 location.getLongitude();
-                Log.d("Latitude", ": " +location.getLatitude());
+                Log.d("Latitude", ": " + location.getLatitude());
                 Log.d("Longitude", ": " + location.getLongitude());
                 databaseReference = FirebaseDatabase.getInstance().getReference();
                 databaseReference.child("User").orderByChild("uemail").equalTo(currentUserEmail).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for(DataSnapshot ds : snapshot.getChildren()){
+                        for (DataSnapshot ds : snapshot.getChildren()) {
                             ds.getRef().child("Location").child("Latitude").setValue(location.getLatitude());
                             ds.getRef().child("Location").child("Longitude").setValue(location.getLongitude());
                         }
@@ -186,15 +175,13 @@ public class LocationMonitor extends Service {
 
         }
 
-        public void onProviderDisabled(String provider)
-        {
-            Toast.makeText( getApplicationContext(), "Gps Disabled", Toast.LENGTH_SHORT ).show();
+        public void onProviderDisabled(String provider) {
+            Toast.makeText(getApplicationContext(), "Gps Disabled", Toast.LENGTH_SHORT).show();
         }
 
 
-        public void onProviderEnabled(String provider)
-        {
-            Toast.makeText( getApplicationContext(), "Gps Enabled", Toast.LENGTH_SHORT).show();
+        public void onProviderEnabled(String provider) {
+            Toast.makeText(getApplicationContext(), "Gps Enabled", Toast.LENGTH_SHORT).show();
         }
     }
 }

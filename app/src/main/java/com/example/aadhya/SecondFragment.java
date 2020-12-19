@@ -1,17 +1,14 @@
 package com.example.aadhya;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,7 +24,7 @@ public class SecondFragment extends Fragment {
     EditText editName, editEmail, editPhone;
     DatabaseReference databaseReference;
     static String name, phone;
-    String  currentUserEmail;
+    String currentUserEmail;
     FloatingActionButton button;
 
     @Override
@@ -65,15 +62,16 @@ public class SecondFragment extends Fragment {
                 final String set_name = editName.getText().toString();
                 final String set_email = editEmail.getText().toString();
                 final String set_phone = editPhone.getText().toString();
-                if(set_name == "" || set_email == "" || set_phone == "") {
+                if (set_name == "" || set_email == "" || set_phone == "") {
                     Toast.makeText(getContext(), "Enter all Details", Toast.LENGTH_SHORT).show();
                 } else {
-                    if(set_phone.length() != 10) {
+                    if (set_phone.length() != 10) {
                         Toast.makeText(getContext(), "Invalid Phone number", Toast.LENGTH_SHORT).show();
                     } else {
                         String pattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-                        if(!(set_email.trim().matches(pattern))) {
-                            Toast.makeText(getContext(), "Invalid email address", Toast.LENGTH_SHORT).show();;
+                        if (!(set_email.trim().matches(pattern))) {
+                            Toast.makeText(getContext(), "Invalid email address", Toast.LENGTH_SHORT).show();
+                            ;
                         } else {
                             databaseReference.child("User").orderByChild("uemail").equalTo(currentUserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -105,9 +103,9 @@ public class SecondFragment extends Fragment {
         return v;
     }
 
-    public static void setDetails(String n, String p){
-        name=n;
-        phone=p;
+    public static void setDetails(String n, String p) {
+        name = n;
+        phone = p;
 
     }
 
